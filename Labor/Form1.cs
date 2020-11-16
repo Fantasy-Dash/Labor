@@ -16,5 +16,16 @@ namespace Labor
         {
             InitializeComponent();
         }
+
+        private void BtnSubmit_Click(object sender, EventArgs e)
+        {
+            string tb=tbText.Text;
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

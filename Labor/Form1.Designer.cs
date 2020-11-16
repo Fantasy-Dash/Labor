@@ -29,13 +29,59 @@ namespace Labor
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.btnSubmit = new System.Windows.Forms.Button();
+            this.tbText = new System.Windows.Forms.TextBox();
+            this.textBoxState = new System.Windows.Forms.TextBox();
+            this.SuspendLayout();
+            // 
+            // btnSubmit
+            // 
+            this.btnSubmit.Location = new System.Drawing.Point(12, 12);
+            this.btnSubmit.Name = "btnSubmit";
+            this.btnSubmit.Size = new System.Drawing.Size(75, 23);
+            this.btnSubmit.TabIndex = 0;
+            this.btnSubmit.Text = "拼接";
+            this.btnSubmit.UseVisualStyleBackColor = true;
+            this.btnSubmit.Click += new System.EventHandler(this.BtnSubmit_Click);
+            // 
+            // tbText
+            // 
+            this.tbText.Location = new System.Drawing.Point(93, 12);
+            this.tbText.Multiline = true;
+            this.tbText.Name = "tbText";
+            this.tbText.Size = new System.Drawing.Size(251, 327);
+            this.tbText.TabIndex = 1;
+            // 
+            // textBoxState
+            // 
+            this.textBoxState.Location = new System.Drawing.Point(12, 345);
+            this.textBoxState.Multiline = true;
+            this.textBoxState.Name = "textBoxState";
+            this.textBoxState.Size = new System.Drawing.Size(332, 55);
+            this.textBoxState.TabIndex = 2;
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(354, 406);
+            this.Controls.Add(this.textBoxState);
+            this.Controls.Add(this.tbText);
+            this.Controls.Add(this.btnSubmit);
+            this.Name = "Form1";
             this.Text = "Form1";
+            this.TopMost = true;
+            this.Load += new System.EventHandler(this.Form1_Load);
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
         }
 
         #endregion
+
+        private System.Windows.Forms.Button btnSubmit;
+        private System.Windows.Forms.TextBox tbText;
+        private System.Windows.Forms.TextBox textBoxState;
     }
 }
 
