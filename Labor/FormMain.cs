@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Resources;
 using System.Text;
 using System.Windows.Forms;
+using Labor.Properties;
 using Newtonsoft.Json.Linq;
 
 namespace Labor
@@ -25,11 +28,11 @@ namespace Labor
 
         private void FormMain_Load(object sender, EventArgs e)
         {
-            FileStream fS=new FileStream(@"./Data.json",FileMode.OpenOrCreate,FileAccess.ReadWrite);
-            StreamReader sR= new StreamReader(fS,Encoding.UTF8);
-            string strData=sR.ReadToEnd();
             try
             {
+                FileStream fS= new FileStream("Data.json",FileMode.Open,FileAccess.Read);
+                StreamReader sR= new StreamReader(fS,Encoding.UTF8);
+                string strData=sR.ReadToEnd();
                 JObject data=JObject.Parse(strData);
                 List<string> pData=new List<string>();
                 for(int i = 0; i < data["Projects"].Count(); i++)
@@ -38,9 +41,9 @@ namespace Labor
                 }
                 cbP.DataSource = pData;
             }
-            catch(Exception)
+            catch(Exception ex)
             {
-                MessageBox.Show("数据有误程序退出");
+                MessageBox.Show("数据有误程序退出\r\n"+ex.Message);
                 System.Environment.Exit(0);
             }
         }

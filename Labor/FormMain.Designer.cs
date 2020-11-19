@@ -38,11 +38,12 @@ namespace Labor
             this.btnOk = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.lbTask = new System.Windows.Forms.ListBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnSubmit
             // 
-            this.btnSubmit.Location = new System.Drawing.Point(421, 419);
+            this.btnSubmit.Location = new System.Drawing.Point(433, 481);
             this.btnSubmit.Name = "btnSubmit";
             this.btnSubmit.Size = new System.Drawing.Size(75, 23);
             this.btnSubmit.TabIndex = 100;
@@ -62,17 +63,17 @@ namespace Labor
             // textBoxState
             // 
             this.textBoxState.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.textBoxState.Location = new System.Drawing.Point(421, 341);
+            this.textBoxState.Location = new System.Drawing.Point(421, 381);
             this.textBoxState.Multiline = true;
             this.textBoxState.Name = "textBoxState";
-            this.textBoxState.Size = new System.Drawing.Size(121, 55);
+            this.textBoxState.Size = new System.Drawing.Size(204, 80);
             this.textBoxState.TabIndex = 997;
             this.textBoxState.Visible = false;
             // 
             // cbD
             // 
             this.cbD.AutoSize = true;
-            this.cbD.Location = new System.Drawing.Point(421, 319);
+            this.cbD.Location = new System.Drawing.Point(421, 359);
             this.cbD.Name = "cbD";
             this.cbD.Size = new System.Drawing.Size(204, 16);
             this.cbD.TabIndex = 3;
@@ -129,12 +130,22 @@ namespace Labor
             this.lbTask.Size = new System.Drawing.Size(646, 228);
             this.lbTask.TabIndex = 1001;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(533, 539);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 1002;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // FormMain
             // 
             this.AcceptButton = this.btnOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(670, 599);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.lbTask);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.btnOk);
@@ -164,6 +175,7 @@ namespace Labor
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.ListBox lbTask;
+        private System.Windows.Forms.Button button1;
     }
 }
 
