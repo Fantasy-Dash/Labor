@@ -38,7 +38,7 @@ namespace Labor
             this.btnOk = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.lbTask = new System.Windows.Forms.ListBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnSetting = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnSubmit
@@ -63,7 +63,7 @@ namespace Labor
             // textBoxState
             // 
             this.textBoxState.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.textBoxState.Location = new System.Drawing.Point(421, 381);
+            this.textBoxState.Location = new System.Drawing.Point(433, 381);
             this.textBoxState.Multiline = true;
             this.textBoxState.Name = "textBoxState";
             this.textBoxState.Size = new System.Drawing.Size(204, 80);
@@ -130,14 +130,14 @@ namespace Labor
             this.lbTask.Size = new System.Drawing.Size(646, 228);
             this.lbTask.TabIndex = 1001;
             // 
-            // button1
+            // btnSetting
             // 
-            this.button1.Location = new System.Drawing.Point(533, 539);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 1002;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnSetting.Location = new System.Drawing.Point(533, 539);
+            this.btnSetting.Name = "btnSetting";
+            this.btnSetting.Size = new System.Drawing.Size(75, 23);
+            this.btnSetting.TabIndex = 1002;
+            this.btnSetting.Text = "设置";
+            this.btnSetting.UseVisualStyleBackColor = true;
             // 
             // FormMain
             // 
@@ -145,7 +145,7 @@ namespace Labor
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(670, 599);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnSetting);
             this.Controls.Add(this.lbTask);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.btnOk);
@@ -175,7 +175,7 @@ namespace Labor
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.ListBox lbTask;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnSetting;
     }
 }
 
