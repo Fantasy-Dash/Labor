@@ -212,6 +212,7 @@ namespace Labor
                     {
                         TaskList.RemoveAt(TaskList.IndexOf(task));
                         LBTaskRefresh();
+                        lbTask.SelectedIndex = lbTask.Items.Count - 1;
                         return;
                     }
                 }
@@ -224,6 +225,7 @@ namespace Labor
                     {
                         TaskListOther.RemoveAt(TaskListOther.IndexOf(task));
                         LBTaskRefresh();
+                        lbTask.SelectedIndex = lbTask.Items.Count - 1;
                         return;
                     }
                 }
@@ -260,6 +262,14 @@ namespace Labor
                     tbTime.Text = TaskListOther[index].JobTime.ToString("0.0");
                 }
             }
+        }
+
+        private void BtnSelectClear_Click(object sender, EventArgs e)
+        {
+            tbSummary.Text = "";
+            tbPst.Text = "";
+            tbTime.Text = "";
+            lbTask.SelectedIndex = -1;
         }
     }
 }
