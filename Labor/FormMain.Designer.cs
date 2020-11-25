@@ -30,7 +30,7 @@ namespace Labor
         private void InitializeComponent()
         {
             this.btnSubmit = new System.Windows.Forms.Button();
-            this.tbText = new System.Windows.Forms.TextBox();
+            this.tbSummary = new System.Windows.Forms.TextBox();
             this.textBoxState = new System.Windows.Forms.TextBox();
             this.cbD = new System.Windows.Forms.CheckBox();
             this.cbP = new System.Windows.Forms.ComboBox();
@@ -39,6 +39,10 @@ namespace Labor
             this.btnDelete = new System.Windows.Forms.Button();
             this.lbTask = new System.Windows.Forms.ListBox();
             this.btnSetting = new System.Windows.Forms.Button();
+            this.lblTime = new System.Windows.Forms.Label();
+            this.btnSort = new System.Windows.Forms.Button();
+            this.tbPst = new System.Windows.Forms.TextBox();
+            this.tbTime = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btnSubmit
@@ -52,13 +56,13 @@ namespace Labor
             this.btnSubmit.Visible = false;
             this.btnSubmit.Click += new System.EventHandler(this.BtnSubmit_Click);
             // 
-            // tbText
+            // tbSummary
             // 
-            this.tbText.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.tbText.Location = new System.Drawing.Point(12, 40);
-            this.tbText.Name = "tbText";
-            this.tbText.Size = new System.Drawing.Size(596, 23);
-            this.tbText.TabIndex = 1;
+            this.tbSummary.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.tbSummary.Location = new System.Drawing.Point(12, 40);
+            this.tbSummary.Name = "tbSummary";
+            this.tbSummary.Size = new System.Drawing.Size(596, 23);
+            this.tbSummary.TabIndex = 1;
             // 
             // textBoxState
             // 
@@ -93,11 +97,11 @@ namespace Labor
             // tbAR
             // 
             this.tbAR.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.tbAR.Location = new System.Drawing.Point(12, 303);
+            this.tbAR.Location = new System.Drawing.Point(12, 359);
             this.tbAR.Multiline = true;
             this.tbAR.Name = "tbAR";
             this.tbAR.ReadOnly = true;
-            this.tbAR.Size = new System.Drawing.Size(403, 279);
+            this.tbAR.Size = new System.Drawing.Size(403, 230);
             this.tbAR.TabIndex = 998;
             // 
             // btnOk
@@ -112,7 +116,7 @@ namespace Labor
             // 
             // btnDelete
             // 
-            this.btnDelete.Location = new System.Drawing.Point(591, 303);
+            this.btnDelete.Location = new System.Drawing.Point(591, 330);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(67, 23);
             this.btnDelete.TabIndex = 1000;
@@ -125,10 +129,11 @@ namespace Labor
             this.lbTask.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lbTask.FormattingEnabled = true;
             this.lbTask.ItemHeight = 14;
-            this.lbTask.Location = new System.Drawing.Point(12, 69);
+            this.lbTask.Location = new System.Drawing.Point(12, 96);
             this.lbTask.Name = "lbTask";
             this.lbTask.Size = new System.Drawing.Size(646, 228);
             this.lbTask.TabIndex = 1001;
+            this.lbTask.SelectedIndexChanged += new System.EventHandler(this.LbTask_SelectedIndexChanged);
             // 
             // btnSetting
             // 
@@ -139,12 +144,51 @@ namespace Labor
             this.btnSetting.Text = "设置";
             this.btnSetting.UseVisualStyleBackColor = true;
             // 
+            // lblTime
+            // 
+            this.lblTime.AutoSize = true;
+            this.lblTime.Location = new System.Drawing.Point(419, 344);
+            this.lblTime.Name = "lblTime";
+            this.lblTime.Size = new System.Drawing.Size(71, 12);
+            this.lblTime.TabIndex = 1003;
+            this.lblTime.Text = "总计0.0小时";
+            // 
+            // btnSort
+            // 
+            this.btnSort.Location = new System.Drawing.Point(510, 330);
+            this.btnSort.Name = "btnSort";
+            this.btnSort.Size = new System.Drawing.Size(75, 23);
+            this.btnSort.TabIndex = 1004;
+            this.btnSort.Text = "排序";
+            this.btnSort.UseVisualStyleBackColor = true;
+            this.btnSort.Click += new System.EventHandler(this.BtnSort_Click);
+            // 
+            // tbPst
+            // 
+            this.tbPst.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.tbPst.Location = new System.Drawing.Point(12, 67);
+            this.tbPst.Name = "tbPst";
+            this.tbPst.Size = new System.Drawing.Size(161, 23);
+            this.tbPst.TabIndex = 2;
+            // 
+            // tbTime
+            // 
+            this.tbTime.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.tbTime.Location = new System.Drawing.Point(179, 67);
+            this.tbTime.Name = "tbTime";
+            this.tbTime.Size = new System.Drawing.Size(119, 23);
+            this.tbTime.TabIndex = 3;
+            // 
             // FormMain
             // 
             this.AcceptButton = this.btnOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(670, 599);
+            this.Controls.Add(this.tbTime);
+            this.Controls.Add(this.tbPst);
+            this.Controls.Add(this.btnSort);
+            this.Controls.Add(this.lblTime);
             this.Controls.Add(this.btnSetting);
             this.Controls.Add(this.lbTask);
             this.Controls.Add(this.btnDelete);
@@ -153,7 +197,7 @@ namespace Labor
             this.Controls.Add(this.cbP);
             this.Controls.Add(this.cbD);
             this.Controls.Add(this.textBoxState);
-            this.Controls.Add(this.tbText);
+            this.Controls.Add(this.tbSummary);
             this.Controls.Add(this.btnSubmit);
             this.Name = "FormMain";
             this.Text = "Form1";
@@ -167,7 +211,7 @@ namespace Labor
         #endregion
 
         private System.Windows.Forms.Button btnSubmit;
-        private System.Windows.Forms.TextBox tbText;
+        private System.Windows.Forms.TextBox tbSummary;
         private System.Windows.Forms.TextBox textBoxState;
         private System.Windows.Forms.CheckBox cbD;
         private System.Windows.Forms.ComboBox cbP;
@@ -176,6 +220,10 @@ namespace Labor
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.ListBox lbTask;
         private System.Windows.Forms.Button btnSetting;
+        private System.Windows.Forms.Label lblTime;
+        private System.Windows.Forms.Button btnSort;
+        private System.Windows.Forms.TextBox tbPst;
+        private System.Windows.Forms.TextBox tbTime;
     }
 }
 

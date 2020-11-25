@@ -22,8 +22,6 @@ namespace Labor
 
         private void BtnSubmit_Click(object sender, EventArgs e)
         {
-            string tb=tbText.Text;
-
         }
 
         private void FormMain_Load(object sender, EventArgs e)
@@ -43,33 +41,56 @@ namespace Labor
             }
             catch(Exception ex)
             {
-                MessageBox.Show("数据有误程序退出\r\n"+ex.Message);
+                MessageBox.Show("数据有误程序退出\r\n" + ex.Message);
                 System.Environment.Exit(0);
             }
+            //todo 每日日志记录
         }
 
         private void BtnOk_Click(object sender, EventArgs e)
         {
-            if(tbText.Text.Split('·').Length < 3)
+            if(tbSummary.Text.Equals("") || tbPst.Text.Equals("") || tbTime.Text.Equals(""))
             {
-                MessageBox.Show("填写工时和完成度");
+                MessageBox.Show("填写任务、工时、完成度");
                 return;
             }
             TaskClass Newtask = new TaskClass();
             Newtask.Project = cbP.SelectedItem.ToString();
-            Newtask.TaskInfo = tbText.Text.Split('·')[0];
-            Newtask.Pst = Convert.ToInt32(tbText.Text.Split('·')[1]);
-            Newtask.JobTime = Convert.ToDouble(tbText.Text.Split('·')[2]);
-            if(Newtask.Project != "其他")
+            Newtask.TaskInfo = tbSummary.Text;
+            Newtask.Pst = Convert.ToInt32(tbPst.Text);
+            Newtask.JobTime = Convert.ToDouble(tbTime.Text);
+            if(lbTask.SelectedIndex > -1)
             {
-                TaskList.Add(Newtask);
+                if(lbTask.SelectedIndex + 1 <= TaskList.Count)
+                {
+                    TaskList.RemoveAt(lbTask.SelectedIndex);
+                    TaskList.Insert(lbTask.SelectedIndex, Newtask);
+                }
+                else
+                {
+                    TaskListOther.RemoveAt(lbTask.SelectedIndex - TaskList.Count);
+                    TaskListOther.Insert(lbTask.SelectedIndex - TaskList.Count, Newtask);
+                }
             }
             else
             {
-                TaskListOther.Add(Newtask);
+                if(Newtask.Project != "其他")
+                {
+                    TaskList.Add(Newtask);
+                }
+                else
+                {
+                    TaskListOther.Add(Newtask);
+                }
             }
-            TaskList.Sort(CompareByProject);
+            //high 通过按钮改顺序
+            //todo 拖拽改变顺序
             LBTaskRefresh();
+            tbSummary.Text = "";
+            tbPst.Text = "";
+            tbTime.Text = "";
+            lbTask.SelectedIndex = -1;
+            tbSummary.Select();
         }
 
         private void LBTaskRefresh()
@@ -86,6 +107,7 @@ namespace Labor
                 lbTask.Items.Add(taskCount + "、" + task.Project + "  " + task.TaskInfo + "（" + task.Pst + "%，" + task.JobTime + "h）");
                 taskCount++;
             }
+            LBTimeRefresh();
             TBARRefresh();
         }
 
@@ -146,6 +168,20 @@ namespace Labor
             tbAR.Text += taskcount + "、" + task.TaskInfo + "（" + task.Pst + "%，" + task.JobTime + "h）\r\n";
         }
 
+        private void LBTimeRefresh()
+        {
+            var time=0.0;
+            foreach(TaskClass task in TaskList)
+            {
+                time += task.JobTime;
+            }
+            foreach(TaskClass task in TaskListOther)
+            {
+                time += task.JobTime;
+            }
+            lblTime.Text = "总计" + time.ToString("0.0") + "小时";
+        }
+
         private static int CompareByProject(TaskClass x, TaskClass y)//从大到小排序器
         {
             if(x == null)
@@ -168,7 +204,7 @@ namespace Labor
 
         private void BtnDelete_Click(object sender, EventArgs e)
         {
-           if(TaskList.Count>=lbTask.SelectedIndex+1)
+            if(TaskList.Count >= lbTask.SelectedIndex + 1)
             {
                 foreach(TaskClass task in TaskList)
                 {
@@ -184,12 +220,44 @@ namespace Labor
             {
                 foreach(TaskClass task in TaskListOther)
                 {
-                    if(TaskListOther.IndexOf(task)+TaskList.Count == lbTask.SelectedIndex)
+                    if(TaskListOther.IndexOf(task) + TaskList.Count == lbTask.SelectedIndex)
                     {
                         TaskListOther.RemoveAt(TaskListOther.IndexOf(task));
                         LBTaskRefresh();
                         return;
                     }
+                }
+            }
+        }
+
+        private void Sort(List<TaskClass> TaskList) => TaskList.Sort(CompareByProject);
+
+        private void BtnSort_Click(object sender, EventArgs e)
+        {
+            Sort(TaskList);
+            Sort(TaskListOther);
+            LBTaskRefresh();
+        }
+
+        private void LbTask_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int index=lbTask.SelectedIndex;
+            if(index > -1)
+            {
+                if(index + 1 <= TaskList.Count)
+                {
+                    cbP.SelectedItem = TaskList[index].Project;
+                    tbSummary.Text = TaskList[index].TaskInfo;
+                    tbPst.Text = TaskList[index].Pst.ToString();
+                    tbTime.Text = TaskList[index].JobTime.ToString("0.0");
+                }
+                else
+                {
+                    index -= TaskList.Count;
+                    cbP.SelectedItem = TaskListOther[index].Project;
+                    tbSummary.Text = TaskListOther[index].TaskInfo;
+                    tbPst.Text = TaskListOther[index].Pst.ToString();
+                    tbTime.Text = TaskListOther[index].JobTime.ToString("0.0");
                 }
             }
         }
