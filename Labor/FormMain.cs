@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -15,6 +16,10 @@ namespace Labor
     {
         List<TaskClass> TaskList=new List<TaskClass>();
         List<TaskClass> TaskListOther=new List<TaskClass>();
+
+        //拖动排序
+        int indexSource=0;
+        int indexTarget=0;
         public FormMain()
         {
             InitializeComponent();
@@ -83,7 +88,6 @@ namespace Labor
                     TaskListOther.Add(Newtask);
                 }
             }
-            //high 通过按钮改顺序
             //todo 拖拽改变顺序
             LBTaskRefresh();
             tbSummary.Text = "";
@@ -270,6 +274,53 @@ namespace Labor
             tbPst.Text = "";
             tbTime.Text = "";
             lbTask.SelectedIndex = -1;
+        }
+
+        private void LbTask_MouseDown(object sender, MouseEventArgs e)
+        {
+            indexSource = ((ListBox)sender).IndexFromPoint(e.X, e.Y);
+
+            if(indexSource != ListBox.NoMatches)
+            {
+                lbTask.DoDragDrop(lbTask.Items[indexSource].ToString(), DragDropEffects.Copy);
+            }
+        }
+
+        private void LbTask_DragDrop(object sender, DragEventArgs e)
+        {
+            ListBox listbox = (ListBox)sender;
+            indexTarget = listbox.IndexFromPoint(listbox.PointToClient(new Point(e.X, e.Y)));
+            if(indexTarget != ListBox.NoMatches)
+            {
+                object obj = listbox.Items[indexSource];
+                List<TaskClass> lstMenus = (List<TaskClass>)listbox.DataSource;
+                TaskClass modMenu = new TaskClass();
+                modMenu = lstMenus[indexSource];
+
+                lstMenus.RemoveAt(indexSource);//从数据源中移除当前拖动项
+                lstMenus.Insert(indexTarget, modMenu);//拖动项重新插入到数据源指定位置
+
+                lbTask.DataSource = null;//这句一定要写，我不知道是什么原因，我一直以为winform中数据源回自动更新，可是如果我不释放一下数据源就算排好序，Listbox中也不会显示
+
+
+                lbTask.DisplayMember = "MenuName";
+                lbTask.ValueMember = "ID";
+                lbTask.DataSource = lstMenus;//重新设置数据源
+
+                lbTask.SelectedIndex = indexTarget;
+
+            }
+        }
+
+        private void LbTask_DragOver(object sender, DragEventArgs e)
+        {
+            //拖动源和放置的目的地一定是一个ListBox
+            if(e.Data.GetDataPresent(typeof(string)) && ((ListBox)sender).Equals(lbTask))
+            {
+                e.Effect = DragDropEffects.Move;
+            }
+            else
+                e.Effect = DragDropEffects.None;
         }
     }
 }

@@ -128,6 +128,7 @@ namespace Labor
             // 
             // lbTask
             // 
+            this.lbTask.AllowDrop = true;
             this.lbTask.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lbTask.FormattingEnabled = true;
             this.lbTask.ItemHeight = 14;
@@ -136,6 +137,9 @@ namespace Labor
             this.lbTask.Size = new System.Drawing.Size(446, 228);
             this.lbTask.TabIndex = 1001;
             this.lbTask.SelectedIndexChanged += new System.EventHandler(this.LbTask_SelectedIndexChanged);
+            this.lbTask.DragDrop += new System.Windows.Forms.DragEventHandler(this.LbTask_DragDrop);
+            this.lbTask.DragOver += new System.Windows.Forms.DragEventHandler(this.LbTask_DragOver);
+            this.lbTask.MouseDown += new System.Windows.Forms.MouseEventHandler(this.LbTask_MouseDown);
             // 
             // btnSetting
             // 
