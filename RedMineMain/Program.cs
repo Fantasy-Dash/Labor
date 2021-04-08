@@ -1,19 +1,21 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 
-namespace Labor
+namespace RedMineMain
 {
     static class Program
     {
         /// <summary>
-        /// 应用程序的主入口点。
+        ///  The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
+            Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormMain());
+            Application.Run(new Main());
+            RedMine.Properties.Settings.Default.Save();
         }
     }
 }

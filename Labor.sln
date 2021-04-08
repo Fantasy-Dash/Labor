@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30711.63
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Labor", "Labor\Labor.csproj", "{8AB8C38E-0BFE-4FFB-90CC-3E8E62D8CA48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedMineMain", "RedMineMain\RedMineMain.csproj", "{649E76BF-D1FC-4389-9DF5-CCD191C0FC0B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8AB8C38E-0BFE-4FFB-90CC-3E8E62D8CA48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8AB8C38E-0BFE-4FFB-90CC-3E8E62D8CA48}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8AB8C38E-0BFE-4FFB-90CC-3E8E62D8CA48}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8AB8C38E-0BFE-4FFB-90CC-3E8E62D8CA48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{649E76BF-D1FC-4389-9DF5-CCD191C0FC0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{649E76BF-D1FC-4389-9DF5-CCD191C0FC0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{649E76BF-D1FC-4389-9DF5-CCD191C0FC0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{649E76BF-D1FC-4389-9DF5-CCD191C0FC0B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
