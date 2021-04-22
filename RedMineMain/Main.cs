@@ -14,6 +14,8 @@ namespace RedMineMain
     public partial class Main : Form
     {
         RedmineManager manager=null;
+        string DingLogText=string.Empty;
+        string DingTempLogText=string.Empty;
 
         public Main() => InitializeComponent();
 
@@ -77,16 +79,38 @@ relogin:
             timeEntryList.ForEach(row =>
             {
                 var issue= manager.GetObject<Issue>(row.Issue.Id.ToString(),new NameValueCollection());
-                timeEntryModelList.Add(new()
+                if(issue.Subject.IndexOf("【临时】") > -1)
                 {
-                    ProjectName = row.Project.Name,
-                    Hours = row.Hours,
-                    Percent = issue.DoneRatio,
-                    Comments = row.Comments,
-                });
+                    timeEntryModelList.Add(new()
+                    {
+                        Id = row.Id,
+                        ProjectName = row.Project.Name[(row.Project.Name.IndexOf('】') + 1)..],
+                        SubjectId = issue.Id,
+                        Subject = issue.Subject.Replace("【临时】", string.Empty),
+                        Hours = row.Hours,
+                        Percent = issue.DoneRatio,
+                        Comments = row.Comments,
+                        IsTemp = true,
+                    });
+                }
+                else
+                {
+                    timeEntryModelList.Add(new()
+                    {
+                        Id = row.Id,
+                        ProjectName = row.Project.Name[(row.Project.Name.IndexOf('】') + 1)..],
+                        SubjectId = issue.Id,
+                        Subject = issue.Subject,
+                        Hours = row.Hours,
+                        Percent = issue.DoneRatio,
+                        Comments = row.Comments,
+                        IsTemp = false,
+                    });
+                }
+
             });
-            dataGridViewTimeEntry.DataSource = timeEntryModelList;
             DingLogOutputRefresh(timeEntryModelList);
+            dataGridViewTimeEntry.DataSource = timeEntryModelList;
             GC.Collect();
         }
 
@@ -98,34 +122,54 @@ relogin:
 
         private void DingLogOutputRefresh(List<TimeEntryModel> timeEntryModelList)
         {
-            DingLogOutputTextBox.Text = "";
-            string strTempProject="";
+            string strTempProject=string.Empty;
             int projectTaskCount=0;
+            List<TimeEntryModel> tempTimeEntryModelList=new();
+            DingLogText = string.Empty;
             foreach(TimeEntryModel task in timeEntryModelList)
             {
-                if(task.ProjectName == strTempProject)
+                if(!task.IsTemp)
                 {
-                    projectTaskCount += 1;
-                    PrintTaskToTBAR(task, projectTaskCount);
+                    DrawText(ref DingLogText, task, ref strTempProject, ref projectTaskCount);
                 }
                 else
                 {
-                    if(DingLogOutputTextBox.Text == "")
-                    {
-                        DingLogOutputTextBox.Text += "【" + task.ProjectName + "】\r\n";
-                    }
-                    else
-                    {
-                        DingLogOutputTextBox.Text += "\r\n【" + task.ProjectName + "】\r\n";
-                    }
-                    projectTaskCount = 1;
-                    PrintTaskToTBAR(task, projectTaskCount);
-                    strTempProject = task.ProjectName;
+                    tempTimeEntryModelList.Add(task);
                 }
             }
-            DingLogOutputTextBox.Text = DingLogOutputTextBox.Text.Trim();
+            DingTempLogText = string.Empty;
+            foreach(TimeEntryModel task in tempTimeEntryModelList)
+            {
+                DrawText(ref DingTempLogText, task, ref strTempProject, ref projectTaskCount);
+            }
+            DingLogOutputTextBox.Text = (DingLogText + "\r\n----------临时任务----------\r\n\r\n" + DingTempLogText).TrimEnd('\n').TrimEnd('\r');
         }
 
-        private void PrintTaskToTBAR(TimeEntryModel task, int taskcount) => DingLogOutputTextBox.Text += taskcount + "、" + task.Comments + "（" + task.Percent + "%，" + task.Hours + "h）\r\n";
+        private void DrawText(ref string logText, TimeEntryModel task, ref string strTempProject, ref int projectTaskCount)
+        {
+            if(task.ProjectName == strTempProject)
+            {
+                projectTaskCount += 1;
+                logText += projectTaskCount + "、" + task.Comments + "（" + task.Percent + "%，" + task.Hours + "h）\r\n";
+            }
+            else
+            {
+                if(logText == string.Empty)
+                {
+                    logText += "【" + task.ProjectName + "】\r\n";
+                }
+                else
+                {
+                    logText += "\r\n【" + task.ProjectName + "】\r\n";
+                }
+                projectTaskCount = 1;
+                logText += projectTaskCount + "、" + task.Comments + "（" + task.Percent + "%，" + task.Hours + "h）\r\n";
+                strTempProject = task.ProjectName;
+            }
+        }
+
+        private void Button_CopyLog_Click(object sender, EventArgs e) => Clipboard.SetText(DingLogText.Replace("\r\n", "\n").TrimEnd('\n'));
+
+        private void Button_CopyTempLog_Click(object sender, EventArgs e) => Clipboard.SetText(DingTempLogText.Replace("\r\n", "\n").TrimEnd('\n'));
     }
 }
