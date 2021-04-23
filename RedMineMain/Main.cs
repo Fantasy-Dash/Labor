@@ -196,5 +196,24 @@ relogin:
                 ReloadTimeEntry();
             }
         }
+
+        private void DataGridViewTimeEntry_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if(DataGridViewTimeEntry.Columns[e.ColumnIndex].Name == "Percent" && e.RowIndex >= 0)
+            {
+                var currGridViewTimeEntry=(TimeEntryModel)((TimeEntryModel)DataGridViewTimeEntry.Rows[e.RowIndex].DataBoundItem).Clone();
+                var issue= manager.GetObject<Issue>(TimeEntryModelList[e.RowIndex].SubjectId.ToString(), new NameValueCollection());
+                if(currGridViewTimeEntry.Percent==100)
+                {
+                    issue.DoneRatio = 0;
+                }
+                else
+                {
+                    issue.DoneRatio = 100;
+                }
+                manager.UpdateObject(TimeEntryModelList[e.RowIndex].SubjectId.ToString(), issue);
+                ReloadTimeEntry();
+            }
+        }
     }
 }

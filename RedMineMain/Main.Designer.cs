@@ -100,6 +100,7 @@ namespace RedMineMain
             this.DataGridViewTimeEntry.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.DataGridViewTimeEntry.Size = new System.Drawing.Size(880, 151);
             this.DataGridViewTimeEntry.TabIndex = 4;
+            this.DataGridViewTimeEntry.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewTimeEntry_CellContentClick);
             this.DataGridViewTimeEntry.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewTimeEntry_CellValueChanged);
             this.DataGridViewTimeEntry.CurrentCellDirtyStateChanged += new System.EventHandler(this.DataGridViewTimeEntry_CurrentCellDirtyStateChanged);
             // 
@@ -133,6 +134,7 @@ namespace RedMineMain
             this.Subject.FillWeight = 19F;
             this.Subject.HeaderText = "任务";
             this.Subject.Name = "Subject";
+            this.Subject.ReadOnly = true;
             // 
             // IsTemp
             // 
@@ -147,6 +149,7 @@ namespace RedMineMain
             this.Comments.FillWeight = 45F;
             this.Comments.HeaderText = "注释";
             this.Comments.Name = "Comments";
+            this.Comments.ReadOnly = true;
             // 
             // Percent
             // 
@@ -154,6 +157,7 @@ namespace RedMineMain
             this.Percent.FillWeight = 6F;
             this.Percent.HeaderText = "%";
             this.Percent.Name = "Percent";
+            this.Percent.ReadOnly = true;
             // 
             // Hours
             // 
@@ -161,6 +165,7 @@ namespace RedMineMain
             this.Hours.FillWeight = 9F;
             this.Hours.HeaderText = "耗时";
             this.Hours.Name = "Hours";
+            this.Hours.ReadOnly = true;
             // 
             // DingLogOutputTextBox
             // 
