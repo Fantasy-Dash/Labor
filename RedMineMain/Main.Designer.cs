@@ -32,7 +32,7 @@ namespace RedMineMain
             this.Button_Logout = new System.Windows.Forms.Button();
             this.Label_Info = new System.Windows.Forms.Label();
             this.DateTimePicker = new System.Windows.Forms.DateTimePicker();
-            this.dataGridViewTimeEntry = new System.Windows.Forms.DataGridView();
+            this.DataGridViewTimeEntry = new System.Windows.Forms.DataGridView();
             this.Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ProjectName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SubjectId = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -44,7 +44,7 @@ namespace RedMineMain
             this.DingLogOutputTextBox = new System.Windows.Forms.TextBox();
             this.Button_CopyLog = new System.Windows.Forms.Button();
             this.Button_CopyTempLog = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewTimeEntry)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DataGridViewTimeEntry)).BeginInit();
             this.SuspendLayout();
             // 
             // Button_Logout
@@ -76,14 +76,14 @@ namespace RedMineMain
             this.DateTimePicker.Value = new System.DateTime(2021, 4, 24, 23, 59, 59, 0);
             this.DateTimePicker.ValueChanged += new System.EventHandler(this.DateTimePicker_ValueChanged);
             // 
-            // dataGridViewTimeEntry
+            // DataGridViewTimeEntry
             // 
-            this.dataGridViewTimeEntry.AllowUserToAddRows = false;
-            this.dataGridViewTimeEntry.AllowUserToDeleteRows = false;
-            this.dataGridViewTimeEntry.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dataGridViewTimeEntry.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
-            this.dataGridViewTimeEntry.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewTimeEntry.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.DataGridViewTimeEntry.AllowUserToAddRows = false;
+            this.DataGridViewTimeEntry.AllowUserToDeleteRows = false;
+            this.DataGridViewTimeEntry.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.DataGridViewTimeEntry.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
+            this.DataGridViewTimeEntry.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.DataGridViewTimeEntry.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Id,
             this.ProjectName,
             this.SubjectId,
@@ -92,20 +92,23 @@ namespace RedMineMain
             this.Comments,
             this.Percent,
             this.Hours});
-            this.dataGridViewTimeEntry.Location = new System.Drawing.Point(12, 41);
-            this.dataGridViewTimeEntry.Name = "dataGridViewTimeEntry";
-            this.dataGridViewTimeEntry.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            this.dataGridViewTimeEntry.RowHeadersVisible = false;
-            this.dataGridViewTimeEntry.RowTemplate.Height = 25;
-            this.dataGridViewTimeEntry.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.dataGridViewTimeEntry.Size = new System.Drawing.Size(880, 151);
-            this.dataGridViewTimeEntry.TabIndex = 4;
+            this.DataGridViewTimeEntry.Location = new System.Drawing.Point(12, 41);
+            this.DataGridViewTimeEntry.Name = "DataGridViewTimeEntry";
+            this.DataGridViewTimeEntry.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            this.DataGridViewTimeEntry.RowHeadersVisible = false;
+            this.DataGridViewTimeEntry.RowTemplate.Height = 25;
+            this.DataGridViewTimeEntry.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.DataGridViewTimeEntry.Size = new System.Drawing.Size(880, 151);
+            this.DataGridViewTimeEntry.TabIndex = 4;
+            this.DataGridViewTimeEntry.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewTimeEntry_CellValueChanged);
+            this.DataGridViewTimeEntry.CurrentCellDirtyStateChanged += new System.EventHandler(this.DataGridViewTimeEntry_CurrentCellDirtyStateChanged);
             // 
             // Id
             // 
             this.Id.DataPropertyName = "Id";
             this.Id.HeaderText = "Id";
             this.Id.Name = "Id";
+            this.Id.ReadOnly = true;
             this.Id.Visible = false;
             // 
             // ProjectName
@@ -114,12 +117,14 @@ namespace RedMineMain
             this.ProjectName.FillWeight = 15F;
             this.ProjectName.HeaderText = "项目";
             this.ProjectName.Name = "ProjectName";
+            this.ProjectName.ReadOnly = true;
             // 
             // SubjectId
             // 
             this.SubjectId.DataPropertyName = "SubjectId";
             this.SubjectId.HeaderText = "SubjectId";
             this.SubjectId.Name = "SubjectId";
+            this.SubjectId.ReadOnly = true;
             this.SubjectId.Visible = false;
             // 
             // Subject
@@ -193,7 +198,7 @@ namespace RedMineMain
             this.Controls.Add(this.Button_CopyTempLog);
             this.Controls.Add(this.Button_CopyLog);
             this.Controls.Add(this.DingLogOutputTextBox);
-            this.Controls.Add(this.dataGridViewTimeEntry);
+            this.Controls.Add(this.DataGridViewTimeEntry);
             this.Controls.Add(this.DateTimePicker);
             this.Controls.Add(this.Label_Info);
             this.Controls.Add(this.Button_Logout);
@@ -205,7 +210,7 @@ namespace RedMineMain
             this.Text = "Main";
             this.Activated += new System.EventHandler(this.Main_Activated);
             this.Load += new System.EventHandler(this.Main_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewTimeEntry)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DataGridViewTimeEntry)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -216,8 +221,10 @@ namespace RedMineMain
         private System.Windows.Forms.Button Button_Logout;
         private System.Windows.Forms.Label Label_Info;
         private System.Windows.Forms.DateTimePicker DateTimePicker;
-        private System.Windows.Forms.DataGridView dataGridViewTimeEntry;
+        private System.Windows.Forms.DataGridView DataGridViewTimeEntry;
         private System.Windows.Forms.TextBox DingLogOutputTextBox;
+        private System.Windows.Forms.Button Button_CopyLog;
+        private System.Windows.Forms.Button Button_CopyTempLog;
         private System.Windows.Forms.DataGridViewTextBoxColumn Id;
         private System.Windows.Forms.DataGridViewTextBoxColumn ProjectName;
         private System.Windows.Forms.DataGridViewTextBoxColumn SubjectId;
@@ -226,8 +233,6 @@ namespace RedMineMain
         private System.Windows.Forms.DataGridViewTextBoxColumn Comments;
         private System.Windows.Forms.DataGridViewButtonColumn Percent;
         private System.Windows.Forms.DataGridViewTextBoxColumn Hours;
-        private System.Windows.Forms.Button Button_CopyLog;
-        private System.Windows.Forms.Button Button_CopyTempLog;
     }
 }
 

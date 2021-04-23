@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Windows.Forms;
 using Redmine.Net.Api;
 using Redmine.Net.Api.Extensions;
@@ -16,6 +17,7 @@ namespace RedMineMain
         RedmineManager manager=null;
         string DingLogText=string.Empty;
         string DingTempLogText=string.Empty;
+        List<TimeEntryModel> TimeEntryModelList=null;
 
         public Main() => InitializeComponent();
 
@@ -75,42 +77,34 @@ relogin:
             {
                 timeEntryList = new();
             }
-            List<TimeEntryModel> timeEntryModelList=new();
+            TimeEntryModelList = new();
             timeEntryList.ForEach(row =>
             {
                 var issue= manager.GetObject<Issue>(row.Issue.Id.ToString(),new NameValueCollection());
+                TimeEntryModel tEM= new()
+                {
+                    Id = row.Id,
+                    ProjectName = row.Project.Name[(row.Project.Name.IndexOf('】') + 1)..],
+                    SubjectId = issue.Id,
+                    Hours = row.Hours,
+                    Percent = issue.DoneRatio,
+                    Comments = row.Comments,
+                };
                 if(issue.Subject.IndexOf("【临时】") > -1)
                 {
-                    timeEntryModelList.Add(new()
-                    {
-                        Id = row.Id,
-                        ProjectName = row.Project.Name[(row.Project.Name.IndexOf('】') + 1)..],
-                        SubjectId = issue.Id,
-                        Subject = issue.Subject.Replace("【临时】", string.Empty),
-                        Hours = row.Hours,
-                        Percent = issue.DoneRatio,
-                        Comments = row.Comments,
-                        IsTemp = true,
-                    });
+                    tEM.Subject = issue.Subject.Replace("【临时】", string.Empty);
+                    tEM.IsTemp = true;
+                    TimeEntryModelList.Add(tEM);
                 }
                 else
                 {
-                    timeEntryModelList.Add(new()
-                    {
-                        Id = row.Id,
-                        ProjectName = row.Project.Name[(row.Project.Name.IndexOf('】') + 1)..],
-                        SubjectId = issue.Id,
-                        Subject = issue.Subject,
-                        Hours = row.Hours,
-                        Percent = issue.DoneRatio,
-                        Comments = row.Comments,
-                        IsTemp = false,
-                    });
+                    tEM.Subject = issue.Subject;
+                    tEM.IsTemp = false;
+                    TimeEntryModelList.Add(tEM);
                 }
-
             });
-            DingLogOutputRefresh(timeEntryModelList);
-            dataGridViewTimeEntry.DataSource = timeEntryModelList;
+            DingLogOutputRefresh(TimeEntryModelList);
+            DataGridViewTimeEntry.DataSource = new List<TimeEntryModel>(TimeEntryModelList.Select(row => (TimeEntryModel)row.Clone()));
             GC.Collect();
         }
 
@@ -171,5 +165,36 @@ relogin:
         private void Button_CopyLog_Click(object sender, EventArgs e) => Clipboard.SetText(DingLogText.Replace("\r\n", "\n").TrimEnd('\n'));
 
         private void Button_CopyTempLog_Click(object sender, EventArgs e) => Clipboard.SetText(DingTempLogText.Replace("\r\n", "\n").TrimEnd('\n'));
+
+        private void DataGridViewTimeEntry_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            if(DataGridViewTimeEntry.IsCurrentCellDirty)
+            {
+                DataGridViewTimeEntry.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
+        }
+
+        private void DataGridViewTimeEntry_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if(e.RowIndex < 0)
+            {
+                return;
+            }
+            var currGridViewTimeEntry=(TimeEntryModel)((TimeEntryModel)DataGridViewTimeEntry.Rows[e.RowIndex].DataBoundItem).Clone();
+            if(currGridViewTimeEntry.IsTemp != TimeEntryModelList[e.RowIndex].IsTemp)
+            {
+                var issue= manager.GetObject<Issue>(TimeEntryModelList[e.RowIndex].SubjectId.ToString(), new NameValueCollection());
+                if(currGridViewTimeEntry.IsTemp)
+                {
+                    issue.Subject = "【临时】" + issue.Subject;
+                }
+                else
+                {
+                    issue.Subject = issue.Subject.Replace("【临时】", string.Empty);
+                }
+                manager.UpdateObject(TimeEntryModelList[e.RowIndex].SubjectId.ToString(), issue);
+                ReloadTimeEntry();
+            }
+        }
     }
 }

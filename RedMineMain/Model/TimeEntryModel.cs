@@ -1,6 +1,8 @@
-﻿namespace RedMine.Model
+﻿using System;
+
+namespace RedMine.Model
 {
-    public class TimeEntryModel
+    public class TimeEntryModel:ICloneable
     {
         /// <summary>
         /// 工时Id
@@ -41,5 +43,17 @@
         /// 是否是临时任务
         /// </summary>
         public bool IsTemp { get; set; }
+
+        public object Clone() => new TimeEntryModel()
+        {
+            Comments = Comments,
+            Hours = Hours,
+            Id = Id,
+            IsTemp = IsTemp,
+            Percent = Percent,
+            ProjectName = ProjectName,
+            Subject = Subject,
+            SubjectId = SubjectId
+        };
     }
 }
