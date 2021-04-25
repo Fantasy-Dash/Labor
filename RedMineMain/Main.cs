@@ -59,10 +59,7 @@ relogin:
             Label_Info.Text = currUser.FirstName + " " + currUser.LastName;
         }
 
-        private void DateTimePicker_ValueChanged(object sender, EventArgs e)
-        {
-            ReloadTimeEntry();
-        }
+        private void DateTimePicker_ValueChanged(object sender, EventArgs e) => ReloadTimeEntry();
 
         private void ReloadTimeEntry()
         {
@@ -139,7 +136,7 @@ relogin:
             DingLogOutputTextBox.Text = (DingLogText + "\r\n----------临时任务----------\r\n\r\n" + DingTempLogText).TrimEnd('\n').TrimEnd('\r');
         }
 
-        private void DrawText(ref string logText, TimeEntryModel task, ref string strTempProject, ref int projectTaskCount)
+        private static void DrawText(ref string logText, TimeEntryModel task, ref string strTempProject, ref int projectTaskCount)
         {
             if(task.ProjectName == strTempProject)
             {
@@ -162,9 +159,21 @@ relogin:
             }
         }
 
-        private void Button_CopyLog_Click(object sender, EventArgs e) => Clipboard.SetText(DingLogText.Replace("\r\n", "\n").TrimEnd('\n'));
+        private void Button_CopyLog_Click(object sender, EventArgs e)
+        {
+            if(!DingLogText.IsNullOrWhiteSpace())
+            {
+                Clipboard.SetText(DingLogText.Replace("\r\n", "\n").TrimEnd('\n'));
+            }
+        }
 
-        private void Button_CopyTempLog_Click(object sender, EventArgs e) => Clipboard.SetText(DingTempLogText.Replace("\r\n", "\n").TrimEnd('\n'));
+        private void Button_CopyTempLog_Click(object sender, EventArgs e)
+        {
+            if(!DingTempLogText.IsNullOrWhiteSpace())
+            {
+                Clipboard.SetText(DingTempLogText.Replace("\r\n", "\n").TrimEnd('\n'));
+            }
+        }
 
         private void DataGridViewTimeEntry_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
