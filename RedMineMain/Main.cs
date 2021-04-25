@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Redmine.Net.Api;
@@ -100,8 +101,9 @@ relogin:
                     TimeEntryModelList.Add(tEM);
                 }
             });
-            DingLogOutputRefresh(TimeEntryModelList);
             DataGridViewTimeEntry.DataSource = new List<TimeEntryModel>(TimeEntryModelList.Select(row => (TimeEntryModel)row.Clone()));
+            DingLogOutputRefresh();
+            ChangePanelState();
             GC.Collect();
         }
 
@@ -111,13 +113,23 @@ relogin:
             ReloadTimeEntry();
         }
 
-        private void DingLogOutputRefresh(List<TimeEntryModel> timeEntryModelList)
+        private void ChangePanelState()
+        {
+            var avgPercent=Math.Round((TimeEntryModelList.Sum(row => row.Percent) / (TimeEntryModelList.Count == 0 ? 1 : TimeEntryModelList.Count)).Value);
+            LabelPercent.Text = avgPercent.ToString();
+            var totalTime=TimeEntryModelList.Sum(row => row.Hours);
+            LabelTime.Text = totalTime.ToString();
+            PanelState.BackColor = avgPercent != 100 || totalTime < 8 ? Color.Yellow : Color.Green;
+            PanelState.BackColor = avgPercent != 100 && totalTime < 8 ? Color.Red : PanelState.BackColor;
+        }
+
+        private void DingLogOutputRefresh()
         {
             string strTempProject=string.Empty;
             int projectTaskCount=0;
             List<TimeEntryModel> tempTimeEntryModelList=new();
             DingLogText = string.Empty;
-            foreach(TimeEntryModel task in timeEntryModelList)
+            foreach(TimeEntryModel task in TimeEntryModelList)
             {
                 if(!task.IsTemp)
                 {
@@ -161,6 +173,17 @@ relogin:
 
         private void Button_CopyLog_Click(object sender, EventArgs e)
         {
+            if(PanelState.BackColor == Color.Yellow)
+            {
+                MessageBox.Show("工时不足或百分比不是100%","警告",MessageBoxButtons.OK);
+            }
+            if(PanelState.BackColor == Color.Red)
+            {
+                DialogResult ret= MessageBox.Show("工时不足且百分比不是100% 确定要复制吗？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if(ret== DialogResult.No){
+                    return;
+                }
+            }
             if(!DingLogText.IsNullOrWhiteSpace())
             {
                 Clipboard.SetText(DingLogText.Replace("\r\n", "\n").TrimEnd('\n'));
@@ -212,7 +235,7 @@ relogin:
             {
                 var currGridViewTimeEntry=(TimeEntryModel)((TimeEntryModel)DataGridViewTimeEntry.Rows[e.RowIndex].DataBoundItem).Clone();
                 var issue= manager.GetObject<Issue>(TimeEntryModelList[e.RowIndex].SubjectId.ToString(), new NameValueCollection());
-                if(currGridViewTimeEntry.Percent==100)
+                if(currGridViewTimeEntry.Percent == 100)
                 {
                     issue.DoneRatio = 0;
                 }

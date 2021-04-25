@@ -44,6 +44,12 @@ namespace RedMineMain
             this.DingLogOutputTextBox = new System.Windows.Forms.TextBox();
             this.Button_CopyLog = new System.Windows.Forms.Button();
             this.Button_CopyTempLog = new System.Windows.Forms.Button();
+            this.PanelState = new System.Windows.Forms.Panel();
+            this.LabelTimeHeadText = new System.Windows.Forms.Label();
+            this.LabelTime = new System.Windows.Forms.Label();
+            this.LabelTimeFootText = new System.Windows.Forms.Label();
+            this.LabelPercent = new System.Windows.Forms.Label();
+            this.LabelPercentText = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridViewTimeEntry)).BeginInit();
             this.SuspendLayout();
             // 
@@ -195,11 +201,71 @@ namespace RedMineMain
             this.Button_CopyTempLog.UseVisualStyleBackColor = true;
             this.Button_CopyTempLog.Click += new System.EventHandler(this.Button_CopyTempLog_Click);
             // 
+            // PanelState
+            // 
+            this.PanelState.BackColor = System.Drawing.Color.Green;
+            this.PanelState.Location = new System.Drawing.Point(398, 12);
+            this.PanelState.Name = "PanelState";
+            this.PanelState.Size = new System.Drawing.Size(26, 23);
+            this.PanelState.TabIndex = 8;
+            // 
+            // LabelTimeHeadText
+            // 
+            this.LabelTimeHeadText.AutoSize = true;
+            this.LabelTimeHeadText.Location = new System.Drawing.Point(479, 15);
+            this.LabelTimeHeadText.Name = "LabelTimeHeadText";
+            this.LabelTimeHeadText.Size = new System.Drawing.Size(44, 17);
+            this.LabelTimeHeadText.TabIndex = 9;
+            this.LabelTimeHeadText.Text = "工时：";
+            // 
+            // LabelTime
+            // 
+            this.LabelTime.AutoSize = true;
+            this.LabelTime.Location = new System.Drawing.Point(513, 15);
+            this.LabelTime.Name = "LabelTime";
+            this.LabelTime.Size = new System.Drawing.Size(32, 17);
+            this.LabelTime.TabIndex = 10;
+            this.LabelTime.Text = "00.0";
+            // 
+            // LabelTimeFootText
+            // 
+            this.LabelTimeFootText.AutoSize = true;
+            this.LabelTimeFootText.Location = new System.Drawing.Point(541, 15);
+            this.LabelTimeFootText.Name = "LabelTimeFootText";
+            this.LabelTimeFootText.Size = new System.Drawing.Size(32, 17);
+            this.LabelTimeFootText.TabIndex = 11;
+            this.LabelTimeFootText.Text = "小时";
+            // 
+            // LabelPercent
+            // 
+            this.LabelPercent.AutoSize = true;
+            this.LabelPercent.Location = new System.Drawing.Point(430, 15);
+            this.LabelPercent.Name = "LabelPercent";
+            this.LabelPercent.Size = new System.Drawing.Size(29, 17);
+            this.LabelPercent.TabIndex = 12;
+            this.LabelPercent.Text = "100";
+            this.LabelPercent.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // LabelPercentText
+            // 
+            this.LabelPercentText.AutoSize = true;
+            this.LabelPercentText.Location = new System.Drawing.Point(454, 15);
+            this.LabelPercentText.Name = "LabelPercentText";
+            this.LabelPercentText.Size = new System.Drawing.Size(19, 17);
+            this.LabelPercentText.TabIndex = 13;
+            this.LabelPercentText.Text = "%";
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(904, 561);
+            this.Controls.Add(this.LabelPercentText);
+            this.Controls.Add(this.LabelPercent);
+            this.Controls.Add(this.LabelTimeFootText);
+            this.Controls.Add(this.LabelTime);
+            this.Controls.Add(this.LabelTimeHeadText);
+            this.Controls.Add(this.PanelState);
             this.Controls.Add(this.Button_CopyTempLog);
             this.Controls.Add(this.Button_CopyLog);
             this.Controls.Add(this.DingLogOutputTextBox);
@@ -238,6 +304,12 @@ namespace RedMineMain
         private System.Windows.Forms.DataGridViewTextBoxColumn Comments;
         private System.Windows.Forms.DataGridViewButtonColumn Percent;
         private System.Windows.Forms.DataGridViewTextBoxColumn Hours;
+        private System.Windows.Forms.Panel PanelState;
+        private System.Windows.Forms.Label LabelTimeHeadText;
+        private System.Windows.Forms.Label LabelTime;
+        private System.Windows.Forms.Label LabelTimeFootText;
+        private System.Windows.Forms.Label LabelPercent;
+        private System.Windows.Forms.Label LabelPercentText;
     }
 }
 
