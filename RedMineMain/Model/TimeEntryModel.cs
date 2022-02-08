@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace RedMine.Model
+namespace RedMineEditer.Model
 {
-    public class TimeEntryModel:ICloneable
+    public class TimeEntryModel : ICloneable
     {
         /// <summary>
         /// 工时Id

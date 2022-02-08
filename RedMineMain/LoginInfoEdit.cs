@@ -1,6 +1,7 @@
-﻿using System.Windows.Forms;
+﻿using RedMineEditer.Properties;
+using System.Windows.Forms;
 
-namespace RedMine
+namespace RedMineEditer
 {
     public partial class LoginInfoEdit : Form
     {
@@ -8,10 +9,23 @@ namespace RedMine
 
         private void Button_Sumbit_Click(object sender, System.EventArgs e)
         {
-            Properties.Settings.Default.RedMineHost = TB_Host.Text;
-            Properties.Settings.Default.Account = TB_Account.Text;
-            Properties.Settings.Default.Password = TB_PassWord.Text;
-            Properties.Settings.Default.ApiKey = TB_ApiKey.Text;
+            if (!TB_Host.Text.StartsWith("http://"))
+            {
+                if (TB_Host.Text.StartsWith("https://"))
+                {
+                    TB_Host.Text = TB_Host.Text.Replace("https://", "http://");
+                }
+                else
+                {
+                    TB_Host.Text = "http://" + TB_Host.Text;
+                }
+            }
+            Settings.Default.RedMineHost = TB_Host.Text;
+            Settings.Default.Account = TB_Account.Text;
+            Settings.Default.Password = TB_PassWord.Text;
+            Settings.Default.ApiKey = TB_ApiKey.Text;
+            Settings.Default.Save();
+            DialogResult = DialogResult.Yes;
             Close();
         }
 
@@ -21,16 +35,16 @@ namespace RedMine
 
         private void Button_Exit_Click(object sender, System.EventArgs e)
         {
-            Properties.Settings.Default.Save();
-            System.Environment.Exit(0);
+            DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void LoginInfoEdit_Load(object sender, System.EventArgs e)
         {
-            TB_Host.Text = Properties.Settings.Default.RedMineHost;
-            TB_Account.Text = Properties.Settings.Default.Account;
-            TB_PassWord.Text = Properties.Settings.Default.Password;
-            TB_ApiKey.Text = Properties.Settings.Default.ApiKey;
+            TB_Host.Text = Settings.Default.RedMineHost;
+            TB_Account.Text = Settings.Default.Account;
+            TB_PassWord.Text = Settings.Default.Password;
+            TB_ApiKey.Text = Settings.Default.ApiKey;
         }
     }
 }
