@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RedMineEditer.CustomException
+namespace Labor.CustomException
 {
     public class NotLoginException : Exception
     {

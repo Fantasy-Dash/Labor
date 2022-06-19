@@ -1,7 +1,8 @@
-﻿using RedMineEditer.Properties;
+﻿using Labor.Properties;
+using System;
 using System.Windows.Forms;
 
-namespace RedMineEditer
+namespace Labor
 {
     public partial class LoginInfoEdit : Form
     {
@@ -20,31 +21,45 @@ namespace RedMineEditer
                     TB_Host.Text = "http://" + TB_Host.Text;
                 }
             }
+            if (!TB_Host.Text.EndsWith("/"))
+            {
+                TB_Host.Text += "/";
+            }
             Settings.Default.RedMineHost = TB_Host.Text;
             Settings.Default.Account = TB_Account.Text;
             Settings.Default.Password = TB_PassWord.Text;
             Settings.Default.ApiKey = TB_ApiKey.Text;
-            Settings.Default.Save();
             DialogResult = DialogResult.Yes;
             Close();
         }
 
-        private void TB_PassWord_Enter(object sender, System.EventArgs e) => TB_PassWord.PasswordChar = char.MinValue;
+        private void TB_PassWord_Enter(object sender, EventArgs e) => TB_PassWord.PasswordChar = char.MinValue;
+        private void TB_ApiKey_Enter(object sender, EventArgs e) => TB_ApiKey.PasswordChar = char.MinValue;
 
-        private void TB_PassWord_Leave(object sender, System.EventArgs e) => TB_PassWord.PasswordChar = '*';
+        private void TB_PassWord_Leave(object sender, EventArgs e) => TB_PassWord.PasswordChar = '*';
+        private void TB_ApiKey_Leave(object sender, EventArgs e) => TB_ApiKey.PasswordChar = '*';
 
-        private void Button_Exit_Click(object sender, System.EventArgs e)
+        private void Button_Exit_Click(object sender, EventArgs e)
         {
-            DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private void LoginInfoEdit_Load(object sender, System.EventArgs e)
+        private void LoginInfoEdit_Load(object sender, EventArgs e)
         {
             TB_Host.Text = Settings.Default.RedMineHost;
             TB_Account.Text = Settings.Default.Account;
             TB_PassWord.Text = Settings.Default.Password;
             TB_ApiKey.Text = Settings.Default.ApiKey;
+            Settings.Default.IsLogout = true;
+        }
+
+        private void LoginInfoEdit_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            //关闭窗体时规范化窗体返回值
+            if (DialogResult != DialogResult.Yes && DialogResult != DialogResult.OK)
+            {
+                DialogResult = DialogResult.Cancel;
+            }
         }
     }
 }

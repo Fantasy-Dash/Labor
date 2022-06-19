@@ -1,5 +1,5 @@
 ﻿
-namespace RedMineEditer
+namespace Labor
 {
     partial class LoginInfoEdit
     {
@@ -40,11 +40,12 @@ namespace RedMineEditer
             this.Button_Sumbit = new System.Windows.Forms.Button();
             this.Button_Exit = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // TB_Host
             // 
-            this.TB_Host.Location = new System.Drawing.Point(87, 11);
+            this.TB_Host.Location = new System.Drawing.Point(87, 7);
             this.TB_Host.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.TB_Host.Name = "TB_Host";
             this.TB_Host.Size = new System.Drawing.Size(86, 21);
@@ -53,7 +54,7 @@ namespace RedMineEditer
             // Label_Account
             // 
             this.Label_Account.AutoSize = true;
-            this.Label_Account.Location = new System.Drawing.Point(34, 39);
+            this.Label_Account.Location = new System.Drawing.Point(34, 42);
             this.Label_Account.Name = "Label_Account";
             this.Label_Account.Size = new System.Drawing.Size(47, 12);
             this.Label_Account.TabIndex = 1;
@@ -62,7 +63,7 @@ namespace RedMineEditer
             // Label_Host
             // 
             this.Label_Host.AutoSize = true;
-            this.Label_Host.Location = new System.Drawing.Point(4, 14);
+            this.Label_Host.Location = new System.Drawing.Point(4, 10);
             this.Label_Host.Name = "Label_Host";
             this.Label_Host.Size = new System.Drawing.Size(77, 12);
             this.Label_Host.TabIndex = 2;
@@ -70,7 +71,7 @@ namespace RedMineEditer
             // 
             // TB_Account
             // 
-            this.TB_Account.Location = new System.Drawing.Point(87, 36);
+            this.TB_Account.Location = new System.Drawing.Point(87, 39);
             this.TB_Account.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.TB_Account.Name = "TB_Account";
             this.TB_Account.Size = new System.Drawing.Size(86, 21);
@@ -78,7 +79,7 @@ namespace RedMineEditer
             // 
             // TB_PassWord
             // 
-            this.TB_PassWord.Location = new System.Drawing.Point(87, 61);
+            this.TB_PassWord.Location = new System.Drawing.Point(87, 64);
             this.TB_PassWord.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.TB_PassWord.Name = "TB_PassWord";
             this.TB_PassWord.Size = new System.Drawing.Size(86, 21);
@@ -89,7 +90,7 @@ namespace RedMineEditer
             // Label_PassWord
             // 
             this.Label_PassWord.AutoSize = true;
-            this.Label_PassWord.Location = new System.Drawing.Point(46, 64);
+            this.Label_PassWord.Location = new System.Drawing.Point(46, 67);
             this.Label_PassWord.Name = "Label_PassWord";
             this.Label_PassWord.Size = new System.Drawing.Size(35, 12);
             this.Label_PassWord.TabIndex = 4;
@@ -97,16 +98,18 @@ namespace RedMineEditer
             // 
             // TB_ApiKey
             // 
-            this.TB_ApiKey.Location = new System.Drawing.Point(87, 94);
+            this.TB_ApiKey.Location = new System.Drawing.Point(87, 98);
             this.TB_ApiKey.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.TB_ApiKey.Name = "TB_ApiKey";
             this.TB_ApiKey.Size = new System.Drawing.Size(86, 21);
             this.TB_ApiKey.TabIndex = 7;
+            this.TB_ApiKey.Enter += new System.EventHandler(this.TB_ApiKey_Enter);
+            this.TB_ApiKey.Leave += new System.EventHandler(this.TB_ApiKey_Leave);
             // 
             // Label_ApiKey
             // 
             this.Label_ApiKey.AutoSize = true;
-            this.Label_ApiKey.Location = new System.Drawing.Point(4, 97);
+            this.Label_ApiKey.Location = new System.Drawing.Point(4, 101);
             this.Label_ApiKey.Name = "Label_ApiKey";
             this.Label_ApiKey.Size = new System.Drawing.Size(83, 12);
             this.Label_ApiKey.TabIndex = 6;
@@ -114,7 +117,7 @@ namespace RedMineEditer
             // 
             // Button_Sumbit
             // 
-            this.Button_Sumbit.Location = new System.Drawing.Point(6, 121);
+            this.Button_Sumbit.Location = new System.Drawing.Point(6, 123);
             this.Button_Sumbit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Button_Sumbit.Name = "Button_Sumbit";
             this.Button_Sumbit.Size = new System.Drawing.Size(75, 20);
@@ -125,7 +128,7 @@ namespace RedMineEditer
             // 
             // Button_Exit
             // 
-            this.Button_Exit.Location = new System.Drawing.Point(90, 121);
+            this.Button_Exit.Location = new System.Drawing.Point(90, 123);
             this.Button_Exit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Button_Exit.Name = "Button_Exit";
             this.Button_Exit.Size = new System.Drawing.Size(83, 20);
@@ -137,16 +140,25 @@ namespace RedMineEditer
             // label1
             // 
             this.label1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label1.Location = new System.Drawing.Point(12, 87);
+            this.label1.Location = new System.Drawing.Point(12, 91);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(163, 1);
             this.label1.TabIndex = 10;
+            // 
+            // label2
+            // 
+            this.label2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label2.Location = new System.Drawing.Point(12, 33);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(163, 1);
+            this.label2.TabIndex = 11;
             // 
             // LoginInfoEdit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(187, 151);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.Button_Exit);
             this.Controls.Add(this.Button_Sumbit);
@@ -166,6 +178,7 @@ namespace RedMineEditer
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "登录";
             this.TopMost = true;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LoginInfoEdit_FormClosing);
             this.Load += new System.EventHandler(this.LoginInfoEdit_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -185,5 +198,6 @@ namespace RedMineEditer
         private System.Windows.Forms.Button Button_Sumbit;
         private System.Windows.Forms.Button Button_Exit;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }

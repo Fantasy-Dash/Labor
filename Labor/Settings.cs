@@ -1,4 +1,4 @@
-﻿namespace RedMineEditer.Properties
+﻿namespace Labor.Properties
 {
 
 
@@ -20,6 +20,11 @@
             //
         }
 
+        /// <summary>
+        /// 设置修改事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SettingChangingEventHandler(object sender, System.Configuration.SettingChangingEventArgs e)
         {
             if (e.SettingName == "ConfigVersion")
@@ -29,6 +34,7 @@
                     CurrentVersionFirstRun = true;
                 }
             }
+            Save();//设置修改后自动保存
         }
 
         private void SettingsSavingEventHandler(object sender, System.ComponentModel.CancelEventArgs e)

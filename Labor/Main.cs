@@ -1,22 +1,22 @@
-﻿using Redmine.Net.Api.Types;
-using RedMineEditer.Manager;
-using RedMineEditer.Model;
-using RedMineEditer.Properties;
+﻿using Labor.Extension;
+using Labor.Manager;
+using Labor.Model;
+using Labor.Properties;
+using Redmine.Net.Api.Types;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Drawing;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace RedMineEditer
+namespace Labor
 {
     public partial class Main : Form
     {
-        string DingLogText = string.Empty;
-        string DingTempLogText = string.Empty;
+        string LogText = string.Empty;
+        string TempLogText = string.Empty;
         TimeEntryManager timeEntryManager = new TimeEntryManager();
         IssueManager issueManager = new IssueManager();
         List<TimeEntryModel> TimeEntryModelList = null;
@@ -28,25 +28,44 @@ namespace RedMineEditer
 
         private void Main_Load(object sender, EventArgs e)
         {
-#if DEBUG
-            Label_CurrentRequestCountText.Visible = true;
-            Label_CurrentRequestCount.Visible = true;
-            Timer_Debug.Enabled = true;
-#endif
-            #region Config
-            Settings.Default.ConfigVersion=
-           if (==) 
-            #endregion
-            Login();
-            ContextMenuStripForNotifyIcon.ItemClicked += new ToolStripItemClickedEventHandler(ToolStripItemForNotifyIcon_Click);
+            Init(true);
+        }
+
+        private void Init(bool isFirst)
+        {
             DateTimePicker.MaxDate = DateTime.Today;
             DateTimePicker.Value = DateTime.Today;
+            ContextMenuStripForNotifyIcon.ItemClicked += new ToolStripItemClickedEventHandler(ToolStripItemForNotifyIcon_Click);
+
+            if (isFirst)
+            {
+#if DEBUG
+                Label_CurrentRequestCountText.Visible = true;
+                Label_CurrentRequestCount.Visible = true;
+                Width += 200;
+#endif
+                #region Setting
+                var isLogin = SettingManager.Initialize();
+
+                #endregion
+
+                if (isLogin)
+                {
+                    Login();
+                }
+                else
+                {
+                    Logout();
+                }
+            }
         }
 
         private void Login()
         {
-            User CurrentUser = issueManager.Login();
+            User CurrentUser = new Client().Login();
+            Settings.Default.IsLogout = false;
             Label_Info.Text = CurrentUser.FirstName + " " + CurrentUser.LastName;
+            ReloadTimeEntry();
         }
 
         private void Button_Logout_Click(object sender, EventArgs e)
@@ -60,6 +79,7 @@ namespace RedMineEditer
             var ret = new LoginInfoEdit().ShowDialog();
             if (ret == DialogResult.Cancel) { ProgramEnd(); }
             Login();
+            Init(false);
             Visible = true;
         }
 
@@ -69,11 +89,16 @@ namespace RedMineEditer
             Environment.Exit(0);
         }
 
-        private void DateTimePicker_CloseUp(object sender, EventArgs e) => _ = ReloadTimeEntry();
-
-        private async Task<bool> ReloadTimeEntry()
+        public void SwitchAutoStart()
         {
-            return await Task.Run(() =>
+            //todo 切换开机启动
+        }
+
+        private void DateTimePicker_CloseUp(object sender, EventArgs e) => ReloadTimeEntry();
+
+        private async void ReloadTimeEntry()
+        {
+            await Task.Run(() =>
             {
                 var param = new NameValueCollection
                 {
@@ -112,26 +137,19 @@ namespace RedMineEditer
                         TimeEntryModelList.Add(tEM);
                     }
                 });
-                new Thread(() =>
+                Invoke((EventHandler)delegate
                 {
-                    Action action = () =>
-                    {
-                        DataGridViewTimeEntry.DataSource = new List<TimeEntryModel>(TimeEntryModelList.Select(row => (TimeEntryModel)row.Clone()));
-                        DingLogOutputRefresh();
-                        ChangePanelState();
-                        GC.Collect();
-                    };
-                    Invoke(action);
-                })
-                { IsBackground = true }.Start();
-                return true;
+                    DataGridViewTimeEntry.DataSource = new List<TimeEntryModel>(TimeEntryModelList.Select(row => (TimeEntryModel)row.Clone()));
+                    DingLogOutputTextBox.Text = LogOutputRefresh();
+                    ChangePanelState();
+                });
             });
         }
 
-        private async void Main_Activated(object sender, EventArgs e)
+        private void Main_Activated(object sender, EventArgs e)
         {
             DateTimePicker.MaxDate = DateTime.Today;
-            _ = await ReloadTimeEntry();
+            ReloadTimeEntry();
         }
 
         private void ChangePanelState()
@@ -144,31 +162,44 @@ namespace RedMineEditer
             PanelState.BackColor = avgPercent != 100 && totalTime < 8 ? Color.Red : PanelState.BackColor;
         }
 
-        private void DingLogOutputRefresh()
+        /// <summary>
+        /// 返回日志拼装
+        /// </summary>
+        /// <returns></returns>
+        private string LogOutputRefresh()
         {
             string strTempProject = string.Empty;
             int projectTaskCount = 0;
             List<TimeEntryModel> tempTimeEntryModelList = new List<TimeEntryModel>();
-            DingLogText = string.Empty;
+            LogText = string.Empty;
             foreach (TimeEntryModel task in TimeEntryModelList)
             {
                 if (!task.IsTemp)
                 {
-                    DrawText(ref DingLogText, task, ref strTempProject, ref projectTaskCount);
+                    DrawText(ref LogText, task, ref strTempProject, ref projectTaskCount);
                 }
                 else
                 {
                     tempTimeEntryModelList.Add(task);
                 }
             }
-            DingTempLogText = string.Empty;
+            TempLogText = string.Empty;
             strTempProject = string.Empty;
             projectTaskCount = 0;
             foreach (TimeEntryModel task in tempTimeEntryModelList)
             {
-                DrawText(ref DingTempLogText, task, ref strTempProject, ref projectTaskCount);
+                DrawText(ref TempLogText, task, ref strTempProject, ref projectTaskCount);
             }
-            DingLogOutputTextBox.Text = (DingLogText + "\r\n----------临时任务----------\r\n\r\n" + DingTempLogText).TrimEnd('\n').TrimEnd('\r');
+            if (LogText.IsNullOrEmpty())
+            {
+                Button_CopyLog.Enabled = false;
+                return "暂无";
+            }
+            else
+            {
+                Button_CopyLog.Enabled = true;
+                return LogText.TrimEnd('\n').TrimEnd('\r');
+            }
         }
 
         private static void DrawText(ref string logText, TimeEntryModel task, ref string strTempProject, ref int projectTaskCount)
@@ -197,22 +228,9 @@ namespace RedMineEditer
         private void Button_CopyLog_Click(object sender, EventArgs e)
         {
             if (!CheckCompletionAndTime()) return;
-            if (!DingLogText.IsNullOrEmpty())
+            if (!LogText.IsNullOrEmpty())
             {
-                Clipboard.SetText(DingLogText.Replace("\r\n", "\n").TrimEnd('\n'));
-            }
-            else
-            {
-                Clipboard.SetText("");
-            }
-        }
-
-        private void Button_CopyTempLog_Click(object sender, EventArgs e)
-        {
-            if (!CheckCompletionAndTime()) return;
-            if (!DingTempLogText.IsNullOrEmpty())
-            {
-                Clipboard.SetText(DingTempLogText.Replace("\r\n", "\n").TrimEnd('\n'));
+                Clipboard.SetText(LogText.Replace("\r\n", "\n").TrimEnd('\n'));
             }
             else
             {
@@ -264,7 +282,7 @@ namespace RedMineEditer
                     issue.Subject = issue.Subject.Replace("【临时】", string.Empty);
                 }
                 issueManager.Update(TimeEntryModelList[e.RowIndex].SubjectId.ToString(), issue);
-                _ = ReloadTimeEntry();
+                ReloadTimeEntry();
             }
         }
 
@@ -283,7 +301,7 @@ namespace RedMineEditer
                     issue.DoneRatio = 100;
                 }
                 issueManager.Update(TimeEntryModelList[e.RowIndex].SubjectId.ToString(), issue);
-                _ = ReloadTimeEntry();
+                ReloadTimeEntry();
             }
         }
 
@@ -307,9 +325,12 @@ namespace RedMineEditer
 
         private void ToolStripItemForNotifyIcon_Click(object sender, ToolStripItemClickedEventArgs e)
         {
-            if (e.ClickedItem.Name == "Quit")
+            switch (e.ClickedItem.Name)
             {
-                ProgramEnd();
+                case "AutoStart": SwitchAutoStart(); break;
+                case "Quit": ProgramEnd(); break;
+                default:
+                    break;
             }
         }
 
@@ -317,15 +338,39 @@ namespace RedMineEditer
         {
             DateTimePicker.Value = DateTime.Today;
             DateTimePicker.MaxDate = DateTime.Today;
+            ReloadTimeEntry();
         }
 
         #region Debug
 
-        private void Timer_Debug_Tick(object sender, EventArgs e)
+        private void Timer_Tick(object sender, EventArgs e)
         {
-            Label_CurrentRequestCount.Text = DebugData.CurrentRequestCount.ToString();
+#if DEBUG
+            Invoke((EventHandler)delegate
+            {
+                Label_CurrentRequestCount.Text = DebugData.CurrentRequestCount.ToString();
+            });
+#endif
+            if (DebugData.CurrentRequestCount > 0)
+            {
+                if (!PictureBox_Loading.Visible)
+                {
+                    Invoke((EventHandler)delegate
+                    {
+                        PictureBox_Loading.Show();
+                    });
+                }
+            }
+            else
+            {
+                Invoke((EventHandler)delegate
+                {
+                    PictureBox_Loading.Hide();
+                });
+            }
         }
 
         #endregion
+
     }
 }

@@ -1,12 +1,17 @@
-﻿namespace RedMineEditer
+﻿using System;
+
+namespace Labor.Extension
 {
-    public static class Extension
+    /// <summary>
+    /// 扩展方法
+    /// </summary>
+    public static class CustomExtension
     {
         public static T CheckNull<T>(this T obj, string errorMsg)
         {
             if (obj == null)
             {
-                throw new System.Exception(errorMsg);
+                throw new Exception(errorMsg);
             }
             return obj;
         }
@@ -15,7 +20,7 @@
         {
             if (string.IsNullOrWhiteSpace(obj))
             {
-                throw new System.Exception(errorMsg);
+                throw new Exception(errorMsg);
             }
             return obj;
         }

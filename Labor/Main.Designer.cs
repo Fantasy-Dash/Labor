@@ -1,5 +1,5 @@
 ﻿
-namespace RedMineEditer
+namespace Labor
 {
     partial class Main
     {
@@ -45,7 +45,6 @@ namespace RedMineEditer
             this.Hours = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DingLogOutputTextBox = new System.Windows.Forms.TextBox();
             this.Button_CopyLog = new System.Windows.Forms.Button();
-            this.Button_CopyTempLog = new System.Windows.Forms.Button();
             this.PanelState = new System.Windows.Forms.Panel();
             this.LabelTimeHeadText = new System.Windows.Forms.Label();
             this.LabelTime = new System.Windows.Forms.Label();
@@ -57,7 +56,6 @@ namespace RedMineEditer
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewCheckBoxColumn1 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewButtonColumn1 = new System.Windows.Forms.DataGridViewButtonColumn();
             this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -67,31 +65,28 @@ namespace RedMineEditer
             this.button6 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.button7 = new System.Windows.Forms.Button();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.NotifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.ContextMenuStripForNotifyIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.Quit = new System.Windows.Forms.ToolStripMenuItem();
             this.Button_Today = new System.Windows.Forms.Button();
-            this.RadioButton_Code = new System.Windows.Forms.RadioButton();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.Label_CurrentRequestCountText = new System.Windows.Forms.Label();
             this.Label_CurrentRequestCount = new System.Windows.Forms.Label();
-            this.Timer_Debug = new System.Windows.Forms.Timer(this.components);
+            this.Timer = new System.Windows.Forms.Timer(this.components);
+            this.label1 = new System.Windows.Forms.Label();
+            this.PictureBox_Loading = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridViewTimeEntry)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridViewIssues)).BeginInit();
             this.ContextMenuStripForNotifyIcon.SuspendLayout();
-            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureBox_Loading)).BeginInit();
             this.SuspendLayout();
             // 
             // Button_Logout
             // 
-            this.Button_Logout.Location = new System.Drawing.Point(97, 8);
+            this.Button_Logout.Location = new System.Drawing.Point(865, 6);
             this.Button_Logout.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Button_Logout.Name = "Button_Logout";
-            this.Button_Logout.Size = new System.Drawing.Size(39, 16);
+            this.Button_Logout.Size = new System.Drawing.Size(37, 21);
             this.Button_Logout.TabIndex = 0;
             this.Button_Logout.Text = "登出";
             this.Button_Logout.UseVisualStyleBackColor = true;
@@ -100,7 +95,7 @@ namespace RedMineEditer
             // Label_Info
             // 
             this.Label_Info.AutoSize = true;
-            this.Label_Info.Location = new System.Drawing.Point(10, 11);
+            this.Label_Info.Location = new System.Drawing.Point(769, 11);
             this.Label_Info.Name = "Label_Info";
             this.Label_Info.Size = new System.Drawing.Size(41, 12);
             this.Label_Info.TabIndex = 1;
@@ -108,7 +103,7 @@ namespace RedMineEditer
             // 
             // DateTimePicker
             // 
-            this.DateTimePicker.Location = new System.Drawing.Point(555, 218);
+            this.DateTimePicker.Location = new System.Drawing.Point(181, 268);
             this.DateTimePicker.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.DateTimePicker.MinDate = new System.DateTime(2000, 1, 1, 0, 0, 0, 0);
             this.DateTimePicker.Name = "DateTimePicker";
@@ -133,7 +128,7 @@ namespace RedMineEditer
             this.Comments,
             this.Percent,
             this.Hours});
-            this.DataGridViewTimeEntry.Location = new System.Drawing.Point(10, 239);
+            this.DataGridViewTimeEntry.Location = new System.Drawing.Point(10, 293);
             this.DataGridViewTimeEntry.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.DataGridViewTimeEntry.Name = "DataGridViewTimeEntry";
             this.DataGridViewTimeEntry.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
@@ -211,40 +206,29 @@ namespace RedMineEditer
             // 
             // DingLogOutputTextBox
             // 
-            this.DingLogOutputTextBox.Location = new System.Drawing.Point(770, 239);
+            this.DingLogOutputTextBox.Location = new System.Drawing.Point(770, 293);
             this.DingLogOutputTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.DingLogOutputTextBox.Multiline = true;
             this.DingLogOutputTextBox.Name = "DingLogOutputTextBox";
             this.DingLogOutputTextBox.ReadOnly = true;
-            this.DingLogOutputTextBox.Size = new System.Drawing.Size(235, 108);
+            this.DingLogOutputTextBox.Size = new System.Drawing.Size(235, 107);
             this.DingLogOutputTextBox.TabIndex = 5;
             // 
             // Button_CopyLog
             // 
-            this.Button_CopyLog.Location = new System.Drawing.Point(843, 218);
+            this.Button_CopyLog.Location = new System.Drawing.Point(927, 378);
             this.Button_CopyLog.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Button_CopyLog.Name = "Button_CopyLog";
-            this.Button_CopyLog.Size = new System.Drawing.Size(78, 20);
+            this.Button_CopyLog.Size = new System.Drawing.Size(78, 22);
             this.Button_CopyLog.TabIndex = 6;
             this.Button_CopyLog.Text = "复制任务";
             this.Button_CopyLog.UseVisualStyleBackColor = true;
             this.Button_CopyLog.Click += new System.EventHandler(this.Button_CopyLog_Click);
             // 
-            // Button_CopyTempLog
-            // 
-            this.Button_CopyTempLog.Location = new System.Drawing.Point(927, 218);
-            this.Button_CopyTempLog.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.Button_CopyTempLog.Name = "Button_CopyTempLog";
-            this.Button_CopyTempLog.Size = new System.Drawing.Size(80, 20);
-            this.Button_CopyTempLog.TabIndex = 7;
-            this.Button_CopyTempLog.Text = "复制临时任务";
-            this.Button_CopyTempLog.UseVisualStyleBackColor = true;
-            this.Button_CopyTempLog.Click += new System.EventHandler(this.Button_CopyTempLog_Click);
-            // 
             // PanelState
             // 
             this.PanelState.BackColor = System.Drawing.Color.Green;
-            this.PanelState.Location = new System.Drawing.Point(697, 218);
+            this.PanelState.Location = new System.Drawing.Point(124, 271);
             this.PanelState.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PanelState.Name = "PanelState";
             this.PanelState.Size = new System.Drawing.Size(22, 16);
@@ -253,16 +237,17 @@ namespace RedMineEditer
             // LabelTimeHeadText
             // 
             this.LabelTimeHeadText.AutoSize = true;
-            this.LabelTimeHeadText.Location = new System.Drawing.Point(763, 220);
+            this.LabelTimeHeadText.Font = new System.Drawing.Font("宋体", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.LabelTimeHeadText.Location = new System.Drawing.Point(9, 271);
             this.LabelTimeHeadText.Name = "LabelTimeHeadText";
-            this.LabelTimeHeadText.Size = new System.Drawing.Size(41, 12);
+            this.LabelTimeHeadText.Size = new System.Drawing.Size(55, 15);
             this.LabelTimeHeadText.TabIndex = 9;
             this.LabelTimeHeadText.Text = "工时：";
             // 
             // LabelTime
             // 
             this.LabelTime.AutoSize = true;
-            this.LabelTime.Location = new System.Drawing.Point(792, 220);
+            this.LabelTime.Location = new System.Drawing.Point(58, 273);
             this.LabelTime.Name = "LabelTime";
             this.LabelTime.Size = new System.Drawing.Size(29, 12);
             this.LabelTime.TabIndex = 10;
@@ -271,7 +256,7 @@ namespace RedMineEditer
             // LabelTimeFootText
             // 
             this.LabelTimeFootText.AutoSize = true;
-            this.LabelTimeFootText.Location = new System.Drawing.Point(816, 220);
+            this.LabelTimeFootText.Location = new System.Drawing.Point(93, 273);
             this.LabelTimeFootText.Name = "LabelTimeFootText";
             this.LabelTimeFootText.Size = new System.Drawing.Size(29, 12);
             this.LabelTimeFootText.TabIndex = 11;
@@ -280,7 +265,7 @@ namespace RedMineEditer
             // LabelPercent
             // 
             this.LabelPercent.AutoSize = true;
-            this.LabelPercent.Location = new System.Drawing.Point(721, 220);
+            this.LabelPercent.Location = new System.Drawing.Point(148, 273);
             this.LabelPercent.Name = "LabelPercent";
             this.LabelPercent.Size = new System.Drawing.Size(23, 12);
             this.LabelPercent.TabIndex = 12;
@@ -290,7 +275,7 @@ namespace RedMineEditer
             // LabelPercentText
             // 
             this.LabelPercentText.AutoSize = true;
-            this.LabelPercentText.Location = new System.Drawing.Point(741, 220);
+            this.LabelPercentText.Location = new System.Drawing.Point(168, 273);
             this.LabelPercentText.Name = "LabelPercentText";
             this.LabelPercentText.Size = new System.Drawing.Size(11, 12);
             this.LabelPercentText.TabIndex = 13;
@@ -308,11 +293,10 @@ namespace RedMineEditer
             this.dataGridViewTextBoxColumn2,
             this.dataGridViewTextBoxColumn3,
             this.dataGridViewTextBoxColumn4,
-            this.dataGridViewCheckBoxColumn1,
             this.dataGridViewTextBoxColumn5,
             this.dataGridViewButtonColumn1,
             this.dataGridViewTextBoxColumn6});
-            this.DataGridViewIssues.Location = new System.Drawing.Point(10, 28);
+            this.DataGridViewIssues.Location = new System.Drawing.Point(10, 31);
             this.DataGridViewIssues.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.DataGridViewIssues.Name = "DataGridViewIssues";
             this.DataGridViewIssues.ReadOnly = true;
@@ -320,7 +304,7 @@ namespace RedMineEditer
             this.DataGridViewIssues.RowHeadersVisible = false;
             this.DataGridViewIssues.RowTemplate.Height = 25;
             this.DataGridViewIssues.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.DataGridViewIssues.Size = new System.Drawing.Size(754, 186);
+            this.DataGridViewIssues.Size = new System.Drawing.Size(754, 233);
             this.DataGridViewIssues.TabIndex = 14;
             // 
             // dataGridViewTextBoxColumn1
@@ -355,14 +339,6 @@ namespace RedMineEditer
             this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
             this.dataGridViewTextBoxColumn4.ReadOnly = true;
             // 
-            // dataGridViewCheckBoxColumn1
-            // 
-            this.dataGridViewCheckBoxColumn1.DataPropertyName = "IsTemp";
-            this.dataGridViewCheckBoxColumn1.FillWeight = 6F;
-            this.dataGridViewCheckBoxColumn1.HeaderText = "临时";
-            this.dataGridViewCheckBoxColumn1.Name = "dataGridViewCheckBoxColumn1";
-            this.dataGridViewCheckBoxColumn1.ReadOnly = true;
-            // 
             // dataGridViewTextBoxColumn5
             // 
             this.dataGridViewTextBoxColumn5.DataPropertyName = "Comments";
@@ -389,17 +365,17 @@ namespace RedMineEditer
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(141, 8);
+            this.button1.Location = new System.Drawing.Point(877, 83);
             this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(78, 16);
+            this.button1.Size = new System.Drawing.Size(77, 21);
             this.button1.TabIndex = 15;
             this.button1.Text = "新增Issue(未实现)";
             this.button1.UseVisualStyleBackColor = true;
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(225, 8);
+            this.button2.Location = new System.Drawing.Point(794, 113);
             this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(78, 16);
@@ -427,7 +403,7 @@ namespace RedMineEditer
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(93, 218);
+            this.button3.Location = new System.Drawing.Point(877, 59);
             this.button3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(78, 20);
@@ -437,7 +413,7 @@ namespace RedMineEditer
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(10, 218);
+            this.button4.Location = new System.Drawing.Point(794, 59);
             this.button4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(78, 20);
@@ -445,20 +421,9 @@ namespace RedMineEditer
             this.button4.Text = "新增工时(未实现)";
             this.button4.UseVisualStyleBackColor = true;
             // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(452, 9);
-            this.checkBox2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(180, 16);
-            this.checkBox2.TabIndex = 20;
-            this.checkBox2.Text = "只看未完成(不选择 最近7天)";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(687, 8);
+            this.button7.Location = new System.Drawing.Point(794, 83);
             this.button7.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(78, 16);
@@ -466,23 +431,12 @@ namespace RedMineEditer
             this.button7.Text = "观察者(未实现)";
             this.button7.UseVisualStyleBackColor = true;
             // 
-            // checkBox3
-            // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(569, 9);
-            this.checkBox3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(132, 16);
-            this.checkBox3.TabIndex = 22;
-            this.checkBox3.Text = "(未实现 观察者开关";
-            this.checkBox3.UseVisualStyleBackColor = true;
-            // 
             // NotifyIcon
             // 
             this.NotifyIcon.BalloonTipTitle = "RedMine填写";
             this.NotifyIcon.ContextMenuStrip = this.ContextMenuStripForNotifyIcon;
             this.NotifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("NotifyIcon.Icon")));
-            this.NotifyIcon.Text = "RedMineEditer";
+            this.NotifyIcon.Text = "Labor";
             this.NotifyIcon.Visible = true;
             this.NotifyIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.NotifyIcon_MouseClick);
             // 
@@ -492,63 +446,29 @@ namespace RedMineEditer
             this.Quit});
             this.ContextMenuStripForNotifyIcon.Name = "ContextMenuStripForNotifyIcon";
             this.ContextMenuStripForNotifyIcon.ShowImageMargin = false;
-            this.ContextMenuStripForNotifyIcon.Size = new System.Drawing.Size(156, 48);
+            this.ContextMenuStripForNotifyIcon.Size = new System.Drawing.Size(76, 26);
             // 
             // Quit
             // 
             this.Quit.Name = "Quit";
-            this.Quit.Size = new System.Drawing.Size(155, 22);
+            this.Quit.Size = new System.Drawing.Size(75, 22);
             this.Quit.Text = "退出";
             // 
             // Button_Today
             // 
-            this.Button_Today.Location = new System.Drawing.Point(471, 218);
+            this.Button_Today.Location = new System.Drawing.Point(326, 268);
             this.Button_Today.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Button_Today.Name = "Button_Today";
-            this.Button_Today.Size = new System.Drawing.Size(78, 20);
+            this.Button_Today.Size = new System.Drawing.Size(78, 22);
             this.Button_Today.TabIndex = 23;
             this.Button_Today.Text = "选中今天";
             this.Button_Today.UseVisualStyleBackColor = true;
             this.Button_Today.Click += new System.EventHandler(this.Button_Today_Click);
             // 
-            // RadioButton_Code
-            // 
-            this.RadioButton_Code.AutoSize = true;
-            this.RadioButton_Code.Checked = true;
-            this.RadioButton_Code.Location = new System.Drawing.Point(0, 1);
-            this.RadioButton_Code.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.RadioButton_Code.Name = "RadioButton_Code";
-            this.RadioButton_Code.Size = new System.Drawing.Size(71, 16);
-            this.RadioButton_Code.TabIndex = 24;
-            this.RadioButton_Code.TabStop = true;
-            this.RadioButton_Code.Text = "开发任务";
-            this.RadioButton_Code.UseVisualStyleBackColor = true;
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.radioButton1);
-            this.panel1.Controls.Add(this.RadioButton_Code);
-            this.panel1.Location = new System.Drawing.Point(308, 8);
-            this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(139, 19);
-            this.panel1.TabIndex = 25;
-            // 
-            // radioButton1
-            // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(69, 1);
-            this.radioButton1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(65, 16);
-            this.radioButton1.TabIndex = 25;
-            this.radioButton1.Text = "Bug任务";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            // 
             // Label_CurrentRequestCountText
             // 
             this.Label_CurrentRequestCountText.AutoSize = true;
-            this.Label_CurrentRequestCountText.Location = new System.Drawing.Point(771, 10);
+            this.Label_CurrentRequestCountText.Location = new System.Drawing.Point(1024, 11);
             this.Label_CurrentRequestCountText.Name = "Label_CurrentRequestCountText";
             this.Label_CurrentRequestCountText.Size = new System.Drawing.Size(77, 12);
             this.Label_CurrentRequestCountText.TabIndex = 26;
@@ -558,29 +478,49 @@ namespace RedMineEditer
             // Label_CurrentRequestCount
             // 
             this.Label_CurrentRequestCount.AutoSize = true;
-            this.Label_CurrentRequestCount.Location = new System.Drawing.Point(855, 10);
+            this.Label_CurrentRequestCount.Location = new System.Drawing.Point(1108, 11);
             this.Label_CurrentRequestCount.Name = "Label_CurrentRequestCount";
             this.Label_CurrentRequestCount.Size = new System.Drawing.Size(11, 12);
             this.Label_CurrentRequestCount.TabIndex = 27;
             this.Label_CurrentRequestCount.Text = "0";
             this.Label_CurrentRequestCount.Visible = false;
             // 
-            // Timer_Debug
+            // Timer
             // 
-            this.Timer_Debug.Tick += new System.EventHandler(this.Timer_Debug_Tick);
+            this.Timer.Enabled = true;
+            this.Timer.Tick += new System.EventHandler(this.Timer_Tick);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("宋体", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label1.Location = new System.Drawing.Point(7, 8);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(50, 15);
+            this.label1.TabIndex = 28;
+            this.label1.Text = "BUG：";
+            // 
+            // PictureBox_Loading
+            // 
+            this.PictureBox_Loading.Image = global::Labor.Properties.Resources.sync;
+            this.PictureBox_Loading.Location = new System.Drawing.Point(908, 6);
+            this.PictureBox_Loading.Name = "PictureBox_Loading";
+            this.PictureBox_Loading.Size = new System.Drawing.Size(20, 21);
+            this.PictureBox_Loading.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.PictureBox_Loading.TabIndex = 29;
+            this.PictureBox_Loading.TabStop = false;
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1015, 354);
+            this.ClientSize = new System.Drawing.Size(1014, 411);
+            this.Controls.Add(this.PictureBox_Loading);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.Label_CurrentRequestCount);
             this.Controls.Add(this.Label_CurrentRequestCountText);
-            this.Controls.Add(this.panel1);
             this.Controls.Add(this.Button_Today);
-            this.Controls.Add(this.checkBox3);
             this.Controls.Add(this.button7);
-            this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button2);
@@ -592,7 +532,6 @@ namespace RedMineEditer
             this.Controls.Add(this.LabelTime);
             this.Controls.Add(this.LabelTimeHeadText);
             this.Controls.Add(this.PanelState);
-            this.Controls.Add(this.Button_CopyTempLog);
             this.Controls.Add(this.Button_CopyLog);
             this.Controls.Add(this.DingLogOutputTextBox);
             this.Controls.Add(this.DataGridViewTimeEntry);
@@ -605,15 +544,14 @@ namespace RedMineEditer
             this.MaximizeBox = false;
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "RedMineEditer";
+            this.Text = "Labor";
             this.Activated += new System.EventHandler(this.Main_Activated);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.Load += new System.EventHandler(this.Main_Load);
             ((System.ComponentModel.ISupportInitialize)(this.DataGridViewTimeEntry)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridViewIssues)).EndInit();
             this.ContextMenuStripForNotifyIcon.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureBox_Loading)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -627,7 +565,6 @@ namespace RedMineEditer
         private System.Windows.Forms.DataGridView DataGridViewTimeEntry;
         private System.Windows.Forms.TextBox DingLogOutputTextBox;
         private System.Windows.Forms.Button Button_CopyLog;
-        private System.Windows.Forms.Button Button_CopyTempLog;
         private System.Windows.Forms.DataGridViewTextBoxColumn Id;
         private System.Windows.Forms.DataGridViewTextBoxColumn ProjectName;
         private System.Windows.Forms.DataGridViewTextBoxColumn SubjectId;
@@ -643,33 +580,29 @@ namespace RedMineEditer
         private System.Windows.Forms.Label LabelPercent;
         private System.Windows.Forms.Label LabelPercentText;
         private System.Windows.Forms.DataGridView DataGridViewIssues;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
-        private System.Windows.Forms.DataGridViewButtonColumn dataGridViewButtonColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.Button button7;
-        private System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.NotifyIcon NotifyIcon;
         private System.Windows.Forms.ContextMenuStrip ContextMenuStripForNotifyIcon;
         private System.Windows.Forms.ToolStripMenuItem Quit;
         private System.Windows.Forms.Button Button_Today;
-        private System.Windows.Forms.RadioButton RadioButton_Code;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.Label Label_CurrentRequestCountText;
         private System.Windows.Forms.Label Label_CurrentRequestCount;
-        private System.Windows.Forms.Timer Timer_Debug;
+        private System.Windows.Forms.Timer Timer;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
+        private System.Windows.Forms.DataGridViewButtonColumn dataGridViewButtonColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.PictureBox PictureBox_Loading;
     }
 }
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
-namespace RedMineEditer.Manager
+namespace Labor.Manager
 {
     public class TimeEntryManager : BaseManager
     {

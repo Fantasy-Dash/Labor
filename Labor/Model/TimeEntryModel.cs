@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RedMineEditer.Model
+namespace Labor.Model
 {
     public class TimeEntryModel : ICloneable
     {

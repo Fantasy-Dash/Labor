@@ -1,4 +1,4 @@
-﻿namespace RedMineEditer.Model
+﻿namespace Labor.Model
 {
     public static class DebugData
     {
