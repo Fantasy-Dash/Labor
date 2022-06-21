@@ -50,7 +50,6 @@ namespace Labor
             TB_Account.Text = Settings.Default.Account;
             TB_PassWord.Text = Settings.Default.Password;
             TB_ApiKey.Text = Settings.Default.ApiKey;
-            Settings.Default.IsLogout = true;
         }
 
         private void LoginInfoEdit_FormClosing(object sender, FormClosingEventArgs e)

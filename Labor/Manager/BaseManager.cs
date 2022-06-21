@@ -4,14 +4,14 @@ using System.Collections.Specialized;
 
 namespace Labor.Manager
 {
-    public class BaseManager 
+    public class BaseManager
     {
         protected T GetObject<T>(string id, NameValueCollection parameters) where T : class, new()
         {
             DebugData.CurrentRequestCount++;
             T ret = Client.GetClient.GetObject<T>(id, parameters);
             DebugData.CurrentRequestCount--;
-         return ret;
+            return ret;
         }
 
         protected List<T> GetObjects<T>(NameValueCollection parameters) where T : class, new()
@@ -25,7 +25,7 @@ namespace Labor.Manager
         protected void UpdateObject<T>(string id, T obj, string projectId = null) where T : class, new()
         {
             DebugData.CurrentRequestCount++;
-            //Client.GetClient.UpdateObject(id, obj, projectId);
+            Client.GetClient.UpdateObject(id, obj, projectId);
             DebugData.CurrentRequestCount--;
             return;
         }

@@ -1,11 +1,13 @@
-﻿using System;
-
-namespace Labor.Model
+﻿namespace Labor.Model
 {
-    public class TimeEntryModel : ICloneable
+    /// <summary>
+    /// 任务模型
+    /// </summary>
+    public class IssueModel
     {
+
         /// <summary>
-        /// 工时Id
+        /// 主键
         /// </summary>
         public int Id { get; set; }
 
@@ -15,39 +17,34 @@ namespace Labor.Model
         public string ProjectName { get; set; }
 
         /// <summary>
-        /// 任务Id
-        /// </summary>
-        public int SubjectId { get; set; }
-
-        /// <summary>
         /// 任务名
         /// </summary>
         public string Subject { get; set; }
 
         /// <summary>
-        /// 内容
+        /// 描述
         /// </summary>
-        public string Comments { get; set; }
+        public string Description { get; set; }
 
         /// <summary>
         /// 百分比
         /// </summary>
-        public float? Percent { get; set; }
+        public float? DoneRatio { get; set; }
 
         /// <summary>
-        /// 耗时
+        /// 备注
         /// </summary>
-        public decimal Hours { get; set; }
+        public string Notes { get; set; }
 
-        public object Clone() => new TimeEntryModel()
+
+        public object Clone() => new IssueModel()
         {
-            Comments = Comments,
-            Hours = Hours,
             Id = Id,
-            Percent = Percent,
+            Notes = Notes,
+            DoneRatio = DoneRatio,
+            Description = Description,
             ProjectName = ProjectName,
             Subject = Subject,
-            SubjectId = SubjectId
         };
     }
 }

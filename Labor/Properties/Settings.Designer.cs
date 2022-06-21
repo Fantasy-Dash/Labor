@@ -73,7 +73,6 @@ namespace Labor.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool AutoStart {
             get {
                 return ((bool)(this["AutoStart"]));
@@ -85,37 +84,13 @@ namespace Labor.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool FirstRun {
             get {
                 return ((bool)(this["FirstRun"]));
             }
             set {
                 this["FirstRun"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.0.0")]
-        public string ConfigVersion {
-            get {
-                return ((string)(this["ConfigVersion"]));
-            }
-            set {
-                this["ConfigVersion"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool CurrentVersionFirstRun {
-            get {
-                return ((bool)(this["CurrentVersionFirstRun"]));
-            }
-            set {
-                this["CurrentVersionFirstRun"] = value;
             }
         }
         
@@ -128,6 +103,19 @@ namespace Labor.Properties {
             }
             set {
                 this["IsLogout"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" />")]
+        public global::System.Collections.Specialized.StringCollection issueExclude {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["issueExclude"]));
+            }
+            set {
+                this["issueExclude"] = value;
             }
         }
     }

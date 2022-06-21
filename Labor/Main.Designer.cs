@@ -39,11 +39,10 @@ namespace Labor
             this.ProjectName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SubjectId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Subject = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.IsTemp = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Comments = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Percent = new System.Windows.Forms.DataGridViewButtonColumn();
             this.Hours = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.DingLogOutputTextBox = new System.Windows.Forms.TextBox();
+            this.LogOutputTextBox = new System.Windows.Forms.TextBox();
             this.Button_CopyLog = new System.Windows.Forms.Button();
             this.PanelState = new System.Windows.Forms.Panel();
             this.LabelTimeHeadText = new System.Windows.Forms.Label();
@@ -52,13 +51,6 @@ namespace Labor
             this.LabelPercent = new System.Windows.Forms.Label();
             this.LabelPercentText = new System.Windows.Forms.Label();
             this.DataGridViewIssues = new System.Windows.Forms.DataGridView();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewButtonColumn1 = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
@@ -75,6 +67,12 @@ namespace Labor
             this.Timer = new System.Windows.Forms.Timer(this.components);
             this.label1 = new System.Windows.Forms.Label();
             this.PictureBox_Loading = new System.Windows.Forms.PictureBox();
+            this.Timer_GetIssue = new System.Windows.Forms.Timer(this.components);
+            this.RefreshIssueButton = new System.Windows.Forms.Button();
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column1 = new System.Windows.Forms.DataGridViewLinkColumn();
+            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridViewTimeEntry)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridViewIssues)).BeginInit();
             this.ContextMenuStripForNotifyIcon.SuspendLayout();
@@ -124,7 +122,6 @@ namespace Labor
             this.ProjectName,
             this.SubjectId,
             this.Subject,
-            this.IsTemp,
             this.Comments,
             this.Percent,
             this.Hours});
@@ -173,13 +170,6 @@ namespace Labor
             this.Subject.Name = "Subject";
             this.Subject.ReadOnly = true;
             // 
-            // IsTemp
-            // 
-            this.IsTemp.DataPropertyName = "IsTemp";
-            this.IsTemp.FillWeight = 6F;
-            this.IsTemp.HeaderText = "临时";
-            this.IsTemp.Name = "IsTemp";
-            // 
             // Comments
             // 
             this.Comments.DataPropertyName = "Comments";
@@ -204,15 +194,15 @@ namespace Labor
             this.Hours.Name = "Hours";
             this.Hours.ReadOnly = true;
             // 
-            // DingLogOutputTextBox
+            // LogOutputTextBox
             // 
-            this.DingLogOutputTextBox.Location = new System.Drawing.Point(770, 293);
-            this.DingLogOutputTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.DingLogOutputTextBox.Multiline = true;
-            this.DingLogOutputTextBox.Name = "DingLogOutputTextBox";
-            this.DingLogOutputTextBox.ReadOnly = true;
-            this.DingLogOutputTextBox.Size = new System.Drawing.Size(235, 107);
-            this.DingLogOutputTextBox.TabIndex = 5;
+            this.LogOutputTextBox.Location = new System.Drawing.Point(770, 32);
+            this.LogOutputTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.LogOutputTextBox.Multiline = true;
+            this.LogOutputTextBox.Name = "LogOutputTextBox";
+            this.LogOutputTextBox.ReadOnly = true;
+            this.LogOutputTextBox.Size = new System.Drawing.Size(235, 368);
+            this.LogOutputTextBox.TabIndex = 5;
             // 
             // Button_CopyLog
             // 
@@ -291,11 +281,8 @@ namespace Labor
             this.DataGridViewIssues.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dataGridViewTextBoxColumn1,
             this.dataGridViewTextBoxColumn2,
-            this.dataGridViewTextBoxColumn3,
-            this.dataGridViewTextBoxColumn4,
-            this.dataGridViewTextBoxColumn5,
-            this.dataGridViewButtonColumn1,
-            this.dataGridViewTextBoxColumn6});
+            this.Column1,
+            this.dataGridViewTextBoxColumn5});
             this.DataGridViewIssues.Location = new System.Drawing.Point(10, 31);
             this.DataGridViewIssues.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.DataGridViewIssues.Name = "DataGridViewIssues";
@@ -306,66 +293,12 @@ namespace Labor
             this.DataGridViewIssues.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.DataGridViewIssues.Size = new System.Drawing.Size(754, 233);
             this.DataGridViewIssues.TabIndex = 14;
-            // 
-            // dataGridViewTextBoxColumn1
-            // 
-            this.dataGridViewTextBoxColumn1.DataPropertyName = "Id";
-            this.dataGridViewTextBoxColumn1.HeaderText = "Id";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.ReadOnly = true;
-            this.dataGridViewTextBoxColumn1.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn2
-            // 
-            this.dataGridViewTextBoxColumn2.DataPropertyName = "ProjectName";
-            this.dataGridViewTextBoxColumn2.FillWeight = 15F;
-            this.dataGridViewTextBoxColumn2.HeaderText = "项目";
-            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            this.dataGridViewTextBoxColumn2.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn3
-            // 
-            this.dataGridViewTextBoxColumn3.DataPropertyName = "SubjectId";
-            this.dataGridViewTextBoxColumn3.HeaderText = "SubjectId";
-            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
-            this.dataGridViewTextBoxColumn3.ReadOnly = true;
-            this.dataGridViewTextBoxColumn3.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn4
-            // 
-            this.dataGridViewTextBoxColumn4.DataPropertyName = "Subject";
-            this.dataGridViewTextBoxColumn4.FillWeight = 19F;
-            this.dataGridViewTextBoxColumn4.HeaderText = "任务";
-            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            this.dataGridViewTextBoxColumn4.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn5
-            // 
-            this.dataGridViewTextBoxColumn5.DataPropertyName = "Comments";
-            this.dataGridViewTextBoxColumn5.FillWeight = 45F;
-            this.dataGridViewTextBoxColumn5.HeaderText = "注释";
-            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
-            this.dataGridViewTextBoxColumn5.ReadOnly = true;
-            // 
-            // dataGridViewButtonColumn1
-            // 
-            this.dataGridViewButtonColumn1.DataPropertyName = "Percent";
-            this.dataGridViewButtonColumn1.FillWeight = 6F;
-            this.dataGridViewButtonColumn1.HeaderText = "%";
-            this.dataGridViewButtonColumn1.Name = "dataGridViewButtonColumn1";
-            this.dataGridViewButtonColumn1.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn6
-            // 
-            this.dataGridViewTextBoxColumn6.DataPropertyName = "Hours";
-            this.dataGridViewTextBoxColumn6.FillWeight = 9F;
-            this.dataGridViewTextBoxColumn6.HeaderText = "耗时";
-            this.dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
-            this.dataGridViewTextBoxColumn6.ReadOnly = true;
+            this.DataGridViewIssues.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewIssues_CellContentClick);
+            this.DataGridViewIssues.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewIssues_CellValueChanged);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(877, 83);
+            this.button1.Location = new System.Drawing.Point(1110, 140);
             this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(77, 21);
@@ -375,7 +308,7 @@ namespace Labor
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(794, 113);
+            this.button2.Location = new System.Drawing.Point(1027, 170);
             this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(78, 16);
@@ -403,7 +336,7 @@ namespace Labor
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(877, 59);
+            this.button3.Location = new System.Drawing.Point(1110, 116);
             this.button3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(78, 20);
@@ -413,7 +346,7 @@ namespace Labor
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(794, 59);
+            this.button4.Location = new System.Drawing.Point(1027, 116);
             this.button4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(78, 20);
@@ -423,7 +356,7 @@ namespace Labor
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(794, 83);
+            this.button7.Location = new System.Drawing.Point(1027, 140);
             this.button7.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(78, 16);
@@ -487,7 +420,6 @@ namespace Labor
             // 
             // Timer
             // 
-            this.Timer.Enabled = true;
             this.Timer.Tick += new System.EventHandler(this.Timer_Tick);
             // 
             // label1
@@ -496,9 +428,9 @@ namespace Labor
             this.label1.Font = new System.Drawing.Font("宋体", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label1.Location = new System.Drawing.Point(7, 8);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(50, 15);
+            this.label1.Size = new System.Drawing.Size(87, 15);
             this.label1.TabIndex = 28;
-            this.label1.Text = "BUG：";
+            this.label1.Text = "任务列表：";
             // 
             // PictureBox_Loading
             // 
@@ -510,11 +442,60 @@ namespace Labor
             this.PictureBox_Loading.TabIndex = 29;
             this.PictureBox_Loading.TabStop = false;
             // 
+            // Timer_GetIssue
+            // 
+            this.Timer_GetIssue.Interval = 1000;
+            this.Timer_GetIssue.Tick += new System.EventHandler(this.Timer_GetIssue_Tick);
+            // 
+            // RefreshIssueButton
+            // 
+            this.RefreshIssueButton.Location = new System.Drawing.Point(93, 5);
+            this.RefreshIssueButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.RefreshIssueButton.Name = "RefreshIssueButton";
+            this.RefreshIssueButton.Size = new System.Drawing.Size(78, 22);
+            this.RefreshIssueButton.TabIndex = 30;
+            this.RefreshIssueButton.Text = "刷新通知";
+            this.RefreshIssueButton.UseVisualStyleBackColor = true;
+            this.RefreshIssueButton.Click += new System.EventHandler(this.RefreshIssueButton_Click);
+            // 
+            // dataGridViewTextBoxColumn1
+            // 
+            this.dataGridViewTextBoxColumn1.DataPropertyName = "Id";
+            this.dataGridViewTextBoxColumn1.HeaderText = "Id";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            this.dataGridViewTextBoxColumn1.ReadOnly = true;
+            this.dataGridViewTextBoxColumn1.Visible = false;
+            // 
+            // dataGridViewTextBoxColumn2
+            // 
+            this.dataGridViewTextBoxColumn2.DataPropertyName = "ProjectName";
+            this.dataGridViewTextBoxColumn2.FillWeight = 30F;
+            this.dataGridViewTextBoxColumn2.HeaderText = "项目";
+            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            this.dataGridViewTextBoxColumn2.ReadOnly = true;
+            // 
+            // Column1
+            // 
+            this.Column1.DataPropertyName = "Subject";
+            this.Column1.FillWeight = 20F;
+            this.Column1.HeaderText = "任务";
+            this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
+            // 
+            // dataGridViewTextBoxColumn5
+            // 
+            this.dataGridViewTextBoxColumn5.DataPropertyName = "Description";
+            this.dataGridViewTextBoxColumn5.FillWeight = 20F;
+            this.dataGridViewTextBoxColumn5.HeaderText = "注释";
+            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
+            this.dataGridViewTextBoxColumn5.ReadOnly = true;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1014, 411);
+            this.Controls.Add(this.RefreshIssueButton);
             this.Controls.Add(this.PictureBox_Loading);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.Label_CurrentRequestCount);
@@ -533,7 +514,7 @@ namespace Labor
             this.Controls.Add(this.LabelTimeHeadText);
             this.Controls.Add(this.PanelState);
             this.Controls.Add(this.Button_CopyLog);
-            this.Controls.Add(this.DingLogOutputTextBox);
+            this.Controls.Add(this.LogOutputTextBox);
             this.Controls.Add(this.DataGridViewTimeEntry);
             this.Controls.Add(this.DateTimePicker);
             this.Controls.Add(this.Label_Info);
@@ -546,6 +527,7 @@ namespace Labor
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Labor";
             this.Activated += new System.EventHandler(this.Main_Activated);
+            this.Deactivate += new System.EventHandler(this.Main_Deactivate);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.Load += new System.EventHandler(this.Main_Load);
             ((System.ComponentModel.ISupportInitialize)(this.DataGridViewTimeEntry)).EndInit();
@@ -563,16 +545,8 @@ namespace Labor
         private System.Windows.Forms.Label Label_Info;
         private System.Windows.Forms.DateTimePicker DateTimePicker;
         private System.Windows.Forms.DataGridView DataGridViewTimeEntry;
-        private System.Windows.Forms.TextBox DingLogOutputTextBox;
+        private System.Windows.Forms.TextBox LogOutputTextBox;
         private System.Windows.Forms.Button Button_CopyLog;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Id;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ProjectName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SubjectId;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Subject;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn IsTemp;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Comments;
-        private System.Windows.Forms.DataGridViewButtonColumn Percent;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Hours;
         private System.Windows.Forms.Panel PanelState;
         private System.Windows.Forms.Label LabelTimeHeadText;
         private System.Windows.Forms.Label LabelTime;
@@ -594,15 +568,21 @@ namespace Labor
         private System.Windows.Forms.Label Label_CurrentRequestCountText;
         private System.Windows.Forms.Label Label_CurrentRequestCount;
         private System.Windows.Forms.Timer Timer;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
-        private System.Windows.Forms.DataGridViewButtonColumn dataGridViewButtonColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox PictureBox_Loading;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Id;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ProjectName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SubjectId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Subject;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Comments;
+        private System.Windows.Forms.DataGridViewButtonColumn Percent;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Hours;
+        private System.Windows.Forms.Timer Timer_GetIssue;
+        private System.Windows.Forms.Button RefreshIssueButton;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
+        private System.Windows.Forms.DataGridViewLinkColumn Column1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
     }
 }
 
