@@ -6,12 +6,12 @@ namespace Labor.Manager
 {
     public class TimeEntryManager : BaseManager
     {
-        public TimeEntry Get(string id, NameValueCollection parameters)
+        public static TimeEntry Get(string id, NameValueCollection parameters)
         {
             return GetObject<TimeEntry>(id, parameters);
         }
 
-        public List<TimeEntry> GetList(NameValueCollection parameters)
+        public static List<TimeEntry> GetList(NameValueCollection parameters)
         {
             return GetObjects<TimeEntry>(parameters);
         }

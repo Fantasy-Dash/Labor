@@ -116,6 +116,7 @@
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
     <Compile Include="Manager\BaseManager.cs" />
+    <Compile Include="Manager\SystemManager.cs" />
     <Compile Include="Manager\ToastManager.cs" />
     <Compile Include="Manager\Client.cs" />
     <Compile Include="Manager\IssueManager.cs" />

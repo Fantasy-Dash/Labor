@@ -32,8 +32,7 @@ namespace Labor
             {
                 try
                 {
-                    Client client = new Client();
-                    client.Init();
+                    Client.Init();
                     form.Logout();
                 }
                 catch (NotLoginException)

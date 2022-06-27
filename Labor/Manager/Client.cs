@@ -9,35 +9,32 @@ namespace Labor
 {
     public sealed class Client
     {
-        private static readonly Lazy<RedmineManager> lazy = new Lazy<RedmineManager>(() => _redmineManager);
-        public static RedmineManager GetClient { get { return lazy.Value; } }
+        public static RedmineManager RedmineManager = null;
 
-        private static RedmineManager _redmineManager = null;
-
-        public void Init()
+        public static void Init()
         {
-            _redmineManager = null;
+            RedmineManager = null;
         }
 
-        public User Login()
+        public static User Login()
         {
-            if (_redmineManager != null) _redmineManager.GetCurrentUser();
+            if (RedmineManager != null) RedmineManager.GetCurrentUser();
             var host = Settings.Default.RedMineHost;
             var account = Settings.Default.Account;
             var passWord = Settings.Default.Password;
             var apiKey = Settings.Default.ApiKey;
             if (!apiKey.IsNullOrEmpty())
             {
-                _redmineManager = new RedmineManager(host, apiKey, timeout: new TimeSpan(0, 0, 5));
+                RedmineManager = new RedmineManager(host, apiKey, timeout: new TimeSpan(0, 0, 5));
             }
             else if (!account.IsNullOrEmpty())
             {
-                _redmineManager = new RedmineManager(host, account, passWord, timeout: new TimeSpan(0, 0, 5));
+                RedmineManager = new RedmineManager(host, account, passWord, timeout: new TimeSpan(0, 0, 5));
             }
-            if (_redmineManager is null) throw new NotLoginException();
+            if (RedmineManager is null) throw new NotLoginException();
             try
             {
-                return _redmineManager.GetCurrentUser();
+                return RedmineManager.GetCurrentUser();
             }
             catch { throw new NotLoginException(); }
         }

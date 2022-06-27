@@ -18,10 +18,6 @@ namespace Labor
 {
     public partial class Main : Form
     {
-        Client client = new Client();
-        readonly IssueManager issueManager = new IssueManager();
-        readonly TimeEntryManager timeEntryManager = new TimeEntryManager();
-
         LoginInfoEdit LoginInfoEdit = new LoginInfoEdit();
         bool isQuit = false;
         bool isMainForm = true;
@@ -37,17 +33,12 @@ namespace Labor
             InitializeComponent();
         }
 
-        private void Main_Load(object sender, EventArgs e)
-        {
-            Init(true);
-        }
+        #region 处理
 
         private void Init(bool isFirst)
         {
-
             if (isFirst)
             {
-                Timer.Enabled = true;
 
 #if DEBUG
                 Label_CurrentRequestCountText.Visible = true;
@@ -64,10 +55,13 @@ namespace Labor
 
                 #endregion
 
-                DateTimePicker.Value = DateTime.Today;
+                Timer.Enabled = true;
+                DateTimePicker.Value = DateTime.Today.AddDays(-1);
                 DateTimePicker.MaxDate = DateTime.Today;
                 DataGridViewIssues.AutoGenerateColumns = false;
                 DataGridViewIssues.MultiSelect = false;
+                //todo 第一次启动判断弹出是否开机启动
+                AutoStart.Text = (Settings.Default.AutoStart ? "√" : "×") + "开机启动";
 
                 ToastManager.Clear();
 
@@ -84,11 +78,11 @@ namespace Labor
                 ToastNotificationManagerCompat.OnActivated += toastArgs =>
                 {
                     ToastArguments args = ToastArguments.Parse(toastArgs.Argument);
-
+                    //todo 无法触发
                     switch (Enum.Parse(typeof(ToastActionType), args.Get("action")))
                     {
                         case ToastActionType.RemindLater:
-                            issueManager.SendToast(args.Get("contentId"), isShow: false);
+                            IssueManager.SendToast(args.Get("contentId"), isShow: false);
                             break;
                         case ToastActionType.Click:
                             Invoke((EventHandler)delegate
@@ -105,17 +99,12 @@ namespace Labor
 
         private void Login()
         {
-            User CurrentUser = client.Login();
+            User CurrentUser = Client.Login();
             Settings.Default.IsLogout = false;
             Label_Info.Text = CurrentUser.FirstName + " " + CurrentUser.LastName;
             Timer_GetIssue.Enabled = true;
             Timer_GetIssue_Tick(null, new EventArgs());
             ReloadTimeEntry();
-        }
-
-        private void Button_Logout_Click(object sender, EventArgs e)
-        {
-            Logout();
         }
 
         public void Logout()
@@ -146,65 +135,6 @@ namespace Labor
             Settings.Default.Save();
             ToastManager.Clear();
             Environment.Exit(0);
-        }
-
-        public void SwitchAutoStart()
-        {
-            //todo 切换开机启动
-        }
-
-        private void DateTimePicker_CloseUp(object sender, EventArgs e) => ReloadTimeEntry();
-
-        private async void ReloadTimeEntry()
-        {
-            await Task.Run(() =>
-            {
-                var param = new NameValueCollection
-                {
-                        { Redmine.Net.Api.RedmineKeys.USER_ID, $"=me" },
-                        { Redmine.Net.Api.RedmineKeys.SPENT_ON, $"={DateTimePicker.Value:yyyy-MM-dd}" },
-                        { Redmine.Net.Api.RedmineKeys.SORT,"project" }
-                };
-                var timeEntryList = timeEntryManager.GetList(param);
-                if (timeEntryList is null)
-                {
-                    timeEntryList = new List<TimeEntry>();
-                }
-                TimeEntryModelList = new List<TimeEntryModel>();
-                timeEntryList.ForEach(row =>
-                {
-                    var issue = issueManager.Get(row.Issue.Id.ToString(), new NameValueCollection());
-                    TimeEntryModel tEM = new TimeEntryModel()
-                    {
-                        Id = row.Id,
-                        ProjectName = row.Project.Name.Substring((row.Project.Name.IndexOf('】') + 1)),
-                        SubjectId = issue.Id,
-                        Subject = issue.Subject,
-                        Hours = row.Hours,
-                        Percent = issue.DoneRatio,
-                        Comments = row.Comments,
-                    };
-                    TimeEntryModelList.Add(tEM);
-                });
-                Invoke((EventHandler)delegate
-                {
-                    DataGridViewTimeEntry.DataSource = new List<TimeEntryModel>(TimeEntryModelList.Select(row => (TimeEntryModel)row.Clone()));
-                    LogOutputTextBox.Text = LogOutputRefresh();
-                    ChangePanelState();
-                    Timer_GetIssue_Tick(null, new EventArgs());
-                });
-            });
-        }
-
-        private void Main_Activated(object sender, EventArgs e)
-        {
-            if (!Settings.Default.IsLogout)
-            {
-                Timer_GetIssue_Tick(null, e);
-                isMainForm = true;
-                DateTimePicker.MaxDate = DateTime.Today;
-                ReloadTimeEntry();
-            }
         }
 
         private void ChangePanelState()
@@ -241,15 +171,6 @@ namespace Labor
             }
         }
 
-        private void Button_CopyLog_Click(object sender, EventArgs e)
-        {
-            if (!CheckCompletionAndTime()) return;
-            if (LogOutputTextBox.Text.Length > 0)
-            {
-                Clipboard.SetText(LogOutputTextBox.Text);
-            }
-        }
-
         private bool CheckCompletionAndTime()
         {
             if (PanelState.BackColor == Color.Yellow)
@@ -267,132 +188,72 @@ namespace Labor
             return true;
         }
 
-        private void DataGridViewTimeEntry_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        private async void ReloadTimeEntry()
         {
-            if (DataGridViewTimeEntry.IsCurrentCellDirty)
+            await Task.Run(() =>
             {
-                DataGridViewTimeEntry.CommitEdit(DataGridViewDataErrorContexts.Commit);
-            }
-        }
-
-        private void DataGridViewTimeEntry_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0)
-            {
-                return;
-            }
-        }
-
-        private void DataGridViewTimeEntry_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (DataGridViewTimeEntry.Columns[e.ColumnIndex].Name == "Percent" && e.RowIndex >= 0)
-            {
-                var currGridViewTimeEntry = (TimeEntryModel)((TimeEntryModel)DataGridViewTimeEntry.Rows[e.RowIndex].DataBoundItem).Clone();
-                var issue = issueManager.Get(TimeEntryModelList[e.RowIndex].SubjectId.ToString(), new NameValueCollection());
-                if (currGridViewTimeEntry.Percent == 100)
+                //todo 重复触发
+                var param = new NameValueCollection
                 {
-                    issue.DoneRatio = 0;
-                }
-                else
-                {
-                    issue.DoneRatio = 100;
-                }
-                issueManager.Update(TimeEntryModelList[e.RowIndex].SubjectId.ToString(), issue);
-                ReloadTimeEntry();
-            }
-        }
-
-        private void NotifyIcon_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (!Settings.Default.IsLogout && e.Button == MouseButtons.Left)
-            {
-                Visible = !Visible;
-                if (Visible)
-                {
-                    TopLevel = true;
-                }
-            }
-        }
-
-        private void Main_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            Visible = false;//关闭窗体时 隐藏窗体 同时取消关闭事件
-            if (!isQuit)
-            {
-                e.Cancel = true;
-            }
-        }
-
-        private void ToolStripItemForNotifyIcon_Click(object sender, ToolStripItemClickedEventArgs e)
-        {
-            switch (e.ClickedItem.Name)
-            {
-                case "AutoStart": SwitchAutoStart(); break;
-                case "Quit":
-                    ProgramEnd();
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private void Button_Today_Click(object sender, EventArgs e)
-        {
-            DateTimePicker.Value = DateTime.Today;
-            DateTimePicker.MaxDate = DateTime.Today;
-            ReloadTimeEntry();
-        }
-        private void Timer_GetIssue_Tick(object sender, EventArgs e)
-        {
-            var isExecute = false;
-            (!isMainForm && Visible && lastGetIssue.AddSeconds(30) < DateTime.Now)
-                || (isMainForm && Visible && lastGetIssue.AddSeconds(3) < DateTime.Now)
-                || (!isMainForm && !Visible && lastGetIssue.AddMinutes(1) < DateTime.Now)
-                || (isMainForm && !Visible && lastGetIssue.AddSeconds(3) < DateTime.Now)
-                if (isExecute)
-            {
-                //todo 取消通知
-                var bugParam = new NameValueCollection
-                {
-                        { Redmine.Net.Api.RedmineKeys.ASSIGNED_TO_ID, $"=me" },
-                        { Redmine.Net.Api.RedmineKeys.TRACKER_ID, $"=8" },
+                        { Redmine.Net.Api.RedmineKeys.USER_ID, $"=me" },
+                        { Redmine.Net.Api.RedmineKeys.SPENT_ON, $"={DateTimePicker.Value:yyyy-MM-dd}" },
+                        { Redmine.Net.Api.RedmineKeys.SORT,"spent_on:asc,project" },
                 };
-                var bugList = issueManager.GetList(bugParam) ?? new List<Issue>();
+                var timeEntryList = TimeEntryManager.GetList(param);
+                if (timeEntryList is null)
+                {
+                    timeEntryList = new List<TimeEntry>();
+                }
+                TimeEntryModelList = new List<TimeEntryModel>();
+                timeEntryList.ForEach(row =>
+                {
+                    var issue = IssueManager.Get(row.Issue.Id.ToString(), new NameValueCollection());
+                    TimeEntryModel tEM = new TimeEntryModel()
+                    {
+                        Id = row.Id,
+                        ProjectName = row.Project.Name.Substring((row.Project.Name.IndexOf('】') + 1)),
+                        SubjectId = issue.Id,
+                        Subject = issue.Subject,
+                        Hours = row.Hours,
+                        Percent = issue.DoneRatio,
+                        Comments = row.Comments,
+                    };
+                    TimeEntryModelList.Add(tEM);
+                });
+                Invoke((EventHandler)delegate
+                {
+                    DataGridViewTimeEntry.DataSource = new List<TimeEntryModel>(TimeEntryModelList.Select(row => (TimeEntryModel)row.Clone()));
+                    LogOutputTextBox.Text = LogOutputRefresh();
+                    ChangePanelState();
+                    Timer_GetIssue_Tick(null, new EventArgs());
+                });
+            });
+        }
+
+        private async void RefreshIssueList()
+        {
+            await Task.Run(() =>
+            {
+                //todo 观察者列表 |
+
+                //todo 取消通知
+
+                //todo 指回bug 要bug
+                var bugList = IssueManager.GetBugList();
 
                 foreach (Issue issue in bugList)
                 {
-                    if (currentIssueIdList.Contains(issue.Id.ToString()))
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        issueManager.SendToast(issue);
-                    }
+                    if (currentIssueIdList.Contains(issue.Id.ToString())) continue;
+                    IssueManager.SendToast(issue);
                 }
                 currentIssueIdList.Clear();
                 currentIssueIdList.AddRange(bugList.Select(row => row.Id.ToString()).ToArray());
 
-
-                var issueParam = new NameValueCollection
-                {
-                        { Redmine.Net.Api.RedmineKeys.ASSIGNED_TO_ID, $"=me" },
-                        { Redmine.Net.Api.RedmineKeys.TRACKER_ID, $"=2" },
-                        { Redmine.Net.Api.RedmineKeys.STATUS_ID, $"=2" },
-                        { Redmine.Net.Api.RedmineKeys.DONE_RATIO, $"<=99" },
-                };
-                var issueList = issueManager.GetList(issueParam) ?? new List<Issue>();
-
+                var issueList = IssueManager.GetUndoneIssues();
                 foreach (Issue issue in issueList)
                 {
-                    if (issueExcludeIdList.Contains(issue.Id.ToString()))
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        issueManager.SendToast(issue);
-                    }
+                    if (issueExcludeIdList.Contains(issue.Id.ToString())) continue;
+                    IssueManager.SendToast(issue);
                 }
                 issueExcludeIdList.Clear();
                 issueExcludeIdList.AddRange(issueList.Select(row => row.Id.ToString()).ToArray());
@@ -432,10 +293,169 @@ namespace Labor
                         }
                     });
                 }
+            });
+        }
+
+        #endregion
+
+        #region 窗体事件
+
+        private void Main_Load(object sender, EventArgs e) => Init(true);
+
+        private void Main_Activated(object sender, EventArgs e)
+        {
+            if (!Settings.Default.IsLogout)
+            {
+                Timer_GetIssue_Tick(null, e);
+                isMainForm = true;
+                DateTimePicker.MaxDate = DateTime.Today;
+                ReloadTimeEntry();
             }
         }
 
-        #region Debug
+        private void Main_Deactivate(object sender, EventArgs e)
+        {
+            if (!Settings.Default.IsLogout)
+            {
+                isMainForm = false;
+            }
+        }
+
+        private void Main_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Visible = false;//关闭窗体时 隐藏窗体 同时取消关闭事件
+            if (!isQuit)
+            {
+                e.Cancel = true;
+            }
+        }
+
+        private void Button_CopyLog_Click(object sender, EventArgs e)
+        {
+            //todo 剪贴板win11异常
+            if (!CheckCompletionAndTime()) return;
+            if (LogOutputTextBox.Text.Length > 0)
+            {
+                Clipboard.SetText(LogOutputTextBox.Text);
+            }
+        }
+
+        private void Button_Logout_Click(object sender, EventArgs e)
+        {
+            Logout();
+        }
+
+        private void Button_RefreshIssue_Click(object sender, EventArgs e)
+        {
+            ToastManager.Clear();
+            currentIssueIdList.Clear();
+            issueExcludeIdList.Clear();
+            RefreshIssueList();
+        }
+
+        private void Button_Today_Click(object sender, EventArgs e)
+        {
+            DateTimePicker.Value = DateTime.Today;
+            DateTimePicker.MaxDate = DateTime.Today;
+            ReloadTimeEntry();
+        }
+
+        private void DateTimePicker_CloseUp(object sender, EventArgs e) => ReloadTimeEntry();
+
+        private void DataGridViewTimeEntry_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            if (DataGridViewTimeEntry.IsCurrentCellDirty)
+            {
+                DataGridViewTimeEntry.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
+        }
+
+        private void DataGridViewTimeEntry_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0)
+            {
+                return;
+            }
+        }
+
+        private void DataGridViewTimeEntry_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (DataGridViewTimeEntry.Columns[e.ColumnIndex].Name == "Percent" && e.RowIndex >= 0)
+            {
+                var currGridViewTimeEntry = (TimeEntryModel)((TimeEntryModel)DataGridViewTimeEntry.Rows[e.RowIndex].DataBoundItem).Clone();
+                var issue = IssueManager.Get(TimeEntryModelList[e.RowIndex].SubjectId.ToString(), new NameValueCollection());
+                if (currGridViewTimeEntry.Percent == 100)
+                {
+                    issue.DoneRatio = 0;
+                }
+                else
+                {
+                    issue.DoneRatio = 100;
+                }
+                IssueManager.Update(TimeEntryModelList[e.RowIndex].SubjectId.ToString(), issue);
+                ReloadTimeEntry();
+            }
+        }
+
+        private void NotifyIcon_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (!Settings.Default.IsLogout && e.Button == MouseButtons.Left)
+            {
+                Visible = !Visible;
+                if (Visible)
+                {
+                    TopLevel = true;
+                }
+            }
+        }
+
+        private void ToolStripItemForNotifyIcon_Click(object sender, ToolStripItemClickedEventArgs e)
+        {
+            switch (e.ClickedItem.Name)
+            {
+                case "AutoStart":
+                    SystemManager.SetAutoStart(!Settings.Default.AutoStart);
+                    AutoStart.Text = (Settings.Default.AutoStart ? "√" : "×") + "开机启动";
+                    break;
+                case "Quit":
+                    ProgramEnd();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void Timer_GetIssue_Tick(object sender, EventArgs e)
+        {
+            var isExecute = false;
+            if (isMainForm)
+            {
+                if (Visible)
+                {
+                    if (lastGetIssue.AddSeconds(3) < DateTime.Now) isExecute = true;
+                }
+                else
+                {
+                    if (lastGetIssue.AddSeconds(3) < DateTime.Now) isExecute = true;
+                }
+            }
+            else
+            {
+                if (Visible)
+                {
+                    if (lastGetIssue.AddSeconds(30) < DateTime.Now) isExecute = true;
+                }
+                else
+                {
+                    if (lastGetIssue.AddMinutes(1) < DateTime.Now) isExecute = true;
+                }
+            }
+
+            if (isExecute)
+            {
+                RefreshIssueList();
+            }
+        }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
@@ -455,24 +475,13 @@ namespace Labor
                     });
                 }
             }
-            else
+            else if (PictureBox_Loading.Visible)
             {
                 Invoke((EventHandler)delegate
                 {
                     PictureBox_Loading.Hide();
                 });
             }
-        }
-
-        #endregion
-
-        private void RefreshIssueButton_Click(object sender, EventArgs e)
-        {
-            ToastManager.Clear();
-            lastGetIssue = DateTime.MinValue;
-            currentIssueIdList.Clear();
-            issueExcludeIdList.Clear();
-            Timer_GetIssue_Tick(null, e);
         }
 
         private void DataGridViewIssues_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -491,12 +500,7 @@ namespace Labor
             }
         }
 
-        private void Main_Deactivate(object sender, EventArgs e)
-        {
-            if (!Settings.Default.IsLogout)
-            {
-                isMainForm = false;
-            }
-        }
+        #endregion
+
     }
 }
