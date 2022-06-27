@@ -80,5 +80,18 @@ namespace Labor.Manager
                 ToastManager.Send(issue.Id.ToString(), ToastGroupType.Issue, issue.Subject, issue.Description, isShow);
             }
         }
+
+        public static void RemoveToast(string issueId)
+        {
+            ToastManager.Remove(issueId, ToastGroupType.Issue);
+        }
+
+        public static void RemoveToast(List<string> issueIdList)
+        {
+            foreach (var issueId in issueIdList)
+            {
+                ToastManager.Remove(issueId, ToastGroupType.Issue);
+            }
+        }
     }
 }

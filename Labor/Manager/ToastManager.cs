@@ -46,9 +46,9 @@ namespace Labor.Manager
             }
         }
 
-        public static void Remove(string id, string group)
+        public static void Remove(string id, ToastGroupType group)
         {
-            ToastNotificationManagerCompat.History.Remove(id, group);
+            ToastNotificationManagerCompat.History.Remove(id, group.ToString());
         }
 
         public static void Clear()

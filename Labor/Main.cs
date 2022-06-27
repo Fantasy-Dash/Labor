@@ -19,14 +19,22 @@ namespace Labor
     public partial class Main : Form
     {
         LoginInfoEdit LoginInfoEdit = new LoginInfoEdit();
-        bool isQuit = false;
-        bool isMainForm = true;
-        DateTime lastGetIssue = DateTime.Now;
         StringCollection issueExcludeIdList = null;
         List<string> currentIssueIdList = new List<string>();
         List<TimeEntryModel> TimeEntryModelList = null;
         List<Issue> currentIssueList = null;
         StringBuilder LogText = null;
+        List<string> watcherList = null;
+
+        #region 状态
+
+        bool refreshingTimeEntityList = false;
+        bool refreshingIssueList = false;
+        bool isQuit = false;
+        bool isMainForm = true;
+        DateTime lastGetIssue = DateTime.Now;
+
+        #endregion
 
         public Main()
         {
@@ -35,6 +43,10 @@ namespace Labor
 
         #region 处理
 
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="isFirst"></param>
         private void Init(bool isFirst)
         {
             if (isFirst)
@@ -56,11 +68,19 @@ namespace Labor
                 #endregion
 
                 Timer.Enabled = true;
-                DateTimePicker.Value = DateTime.Today.AddDays(-1);
+                DateTimePicker.Value = DateTime.Today;
                 DateTimePicker.MaxDate = DateTime.Today;
                 DataGridViewIssues.AutoGenerateColumns = false;
                 DataGridViewIssues.MultiSelect = false;
-                //todo 第一次启动判断弹出是否开机启动
+
+                if (Settings.Default.FirstRun)
+                {
+                    var mssageBoxReturn = MessageBox.Show("是否开机自动启动?", "开机自启", MessageBoxButtons.YesNo);
+                    SystemManager.SetAutoStart(mssageBoxReturn == DialogResult.Yes);
+                    Settings.Default.FirstRun = false;
+                    Settings.Default.Save();
+                }
+
                 AutoStart.Text = (Settings.Default.AutoStart ? "√" : "×") + "开机启动";
 
                 ToastManager.Clear();
@@ -97,6 +117,9 @@ namespace Labor
             }
         }
 
+        /// <summary>
+        /// 登入账号
+        /// </summary>
         private void Login()
         {
             User CurrentUser = Client.Login();
@@ -104,9 +127,12 @@ namespace Labor
             Label_Info.Text = CurrentUser.FirstName + " " + CurrentUser.LastName;
             Timer_GetIssue.Enabled = true;
             Timer_GetIssue_Tick(null, new EventArgs());
-            ReloadTimeEntry();
+            RefreshTimeEntry();
         }
 
+        /// <summary>
+        /// 登出账号
+        /// </summary>
         public void Logout()
         {
             Visible = false;
@@ -125,6 +151,9 @@ namespace Labor
             }
         }
 
+        /// <summary>
+        /// 结束程序
+        /// </summary>
         public void ProgramEnd()
         {
             Visible = false;
@@ -137,6 +166,9 @@ namespace Labor
             Environment.Exit(0);
         }
 
+        /// <summary>
+        /// 修改工时指示
+        /// </summary>
         private void ChangePanelState()
         {
             var avgPercent = Math.Round((TimeEntryModelList.Sum(row => row.Percent) / (TimeEntryModelList.Count == 0 ? 1 : TimeEntryModelList.Count)).Value);
@@ -162,15 +194,20 @@ namespace Labor
             {
                 LogText = new StringBuilder();
                 LogText.AppendLine("今日工作内容（" + DateTimePicker.Value.ToString("yyyy-MM-dd") + "）：");
-                for (int taskCount = 1; taskCount <= TimeEntryModelList.Count; taskCount++)
+                var timeEntryCommentsList = TimeEntryModelList.Select(row => row.Comments).Distinct().ToList();
+                for (int taskCount = 1; taskCount <= timeEntryCommentsList.Count; taskCount++)
                 {
-                    LogText.AppendLine(taskCount + "、" + TimeEntryModelList[taskCount - 1].Comments);
+                    LogText.AppendLine(taskCount + "、" + timeEntryCommentsList[taskCount - 1]);
                 }
                 Button_CopyLog.Enabled = true;
                 return LogText.ToString().TrimEnd('\n').TrimEnd('\r');
             }
         }
 
+        /// <summary>
+        /// 检查工时并提醒
+        /// </summary>
+        /// <returns></returns>
         private bool CheckCompletionAndTime()
         {
             if (PanelState.BackColor == Color.Yellow)
@@ -188,112 +225,136 @@ namespace Labor
             return true;
         }
 
-        private async void ReloadTimeEntry()
+        private async void RefreshTimeEntry()
         {
-            await Task.Run(() =>
+            if (!refreshingTimeEntityList)
             {
-                //todo 重复触发
-                var param = new NameValueCollection
+                refreshingTimeEntityList = true;
+                await Task.Run(() =>
+                {
+                    var param = new NameValueCollection
                 {
                         { Redmine.Net.Api.RedmineKeys.USER_ID, $"=me" },
                         { Redmine.Net.Api.RedmineKeys.SPENT_ON, $"={DateTimePicker.Value:yyyy-MM-dd}" },
                         { Redmine.Net.Api.RedmineKeys.SORT,"spent_on:asc,project" },
                 };
-                var timeEntryList = TimeEntryManager.GetList(param);
-                if (timeEntryList is null)
-                {
-                    timeEntryList = new List<TimeEntry>();
-                }
-                TimeEntryModelList = new List<TimeEntryModel>();
-                timeEntryList.ForEach(row =>
-                {
-                    var issue = IssueManager.Get(row.Issue.Id.ToString(), new NameValueCollection());
-                    TimeEntryModel tEM = new TimeEntryModel()
+                    var timeEntryList = TimeEntryManager.GetList(param);
+                    if (timeEntryList is null)
                     {
-                        Id = row.Id,
-                        ProjectName = row.Project.Name.Substring((row.Project.Name.IndexOf('】') + 1)),
-                        SubjectId = issue.Id,
-                        Subject = issue.Subject,
-                        Hours = row.Hours,
-                        Percent = issue.DoneRatio,
-                        Comments = row.Comments,
-                    };
-                    TimeEntryModelList.Add(tEM);
+                        timeEntryList = new List<TimeEntry>();
+                    }
+                    TimeEntryModelList = new List<TimeEntryModel>();
+                    timeEntryList.ForEach(row =>
+                    {
+                        var issue = IssueManager.Get(row.Issue.Id.ToString(), new NameValueCollection());
+                        TimeEntryModel tEM = new TimeEntryModel()
+                        {
+                            Id = row.Id,
+                            ProjectName = row.Project.Name.Substring((row.Project.Name.IndexOf('】') + 1)),
+                            SubjectId = issue.Id,
+                            Subject = issue.Subject,
+                            Hours = row.Hours,
+                            Percent = issue.DoneRatio,
+                            Comments = row.Comments,
+                        };
+                        TimeEntryModelList.Add(tEM);
+                    });
+                    Invoke((EventHandler)delegate
+                    {
+                        DataGridViewTimeEntry.DataSource = new List<TimeEntryModel>(TimeEntryModelList.Select(row => (TimeEntryModel)row.Clone()));
+                        LogOutputTextBox.Text = LogOutputRefresh();
+                        ChangePanelState();
+                        Timer_GetIssue_Tick(null, new EventArgs());
+                    });
                 });
-                Invoke((EventHandler)delegate
-                {
-                    DataGridViewTimeEntry.DataSource = new List<TimeEntryModel>(TimeEntryModelList.Select(row => (TimeEntryModel)row.Clone()));
-                    LogOutputTextBox.Text = LogOutputRefresh();
-                    ChangePanelState();
-                    Timer_GetIssue_Tick(null, new EventArgs());
-                });
-            });
+                refreshingTimeEntityList = false;
+            }
+
         }
 
         private async void RefreshIssueList()
         {
-            await Task.Run(() =>
+            if (!refreshingIssueList)
             {
-                //todo 观察者列表 |
-
-                //todo 取消通知
-
-                //todo 指回bug 要bug
-                var bugList = IssueManager.GetBugList();
-
-                foreach (Issue issue in bugList)
+                refreshingIssueList = true;
+                await Task.Run(() =>
                 {
-                    if (currentIssueIdList.Contains(issue.Id.ToString())) continue;
-                    IssueManager.SendToast(issue);
-                }
-                currentIssueIdList.Clear();
-                currentIssueIdList.AddRange(bugList.Select(row => row.Id.ToString()).ToArray());
+                    //todo 观察者列表 |
+                    //todo 指回bug 要bug
+                    //todo 开发任务100%
+                    var bugList = IssueManager.GetBugList();
 
-                var issueList = IssueManager.GetUndoneIssues();
-                foreach (Issue issue in issueList)
-                {
-                    if (issueExcludeIdList.Contains(issue.Id.ToString())) continue;
-                    IssueManager.SendToast(issue);
-                }
-                issueExcludeIdList.Clear();
-                issueExcludeIdList.AddRange(issueList.Select(row => row.Id.ToString()).ToArray());
-
-                lastGetIssue = DateTime.Now;
-                Settings.Default.issueExclude = issueExcludeIdList;
-                Settings.Default.Save();
-
-                if (Visible)
-                {
-                    Invoke((EventHandler)delegate
+                    foreach (Issue issue in bugList)
                     {
-                        currentIssueList = new List<Issue>();
-                        currentIssueList.AddRange(issueList);
-                        currentIssueList.AddRange(bugList);
-                        var list = currentIssueList.Select(row =>
+                        if (currentIssueIdList.Contains(issue.Id.ToString()))
                         {
-                            return new IssueModel()
+                            currentIssueIdList.Remove(issue.Id.ToString());
+                            continue;
+                        }
+                        IssueManager.SendToast(issue);
+                    }
+                    foreach (var currentIssueId in currentIssueIdList)
+                    {
+                        IssueManager.RemoveToast(currentIssueId);
+                    }
+                    currentIssueIdList.Clear();
+                    currentIssueIdList.AddRange(bugList.Select(row => row.Id.ToString()).ToArray());
+
+                    var issueList = IssueManager.GetUndoneIssues();
+                    foreach (Issue issue in issueList)
+                    {
+                        if (issueExcludeIdList.Contains(issue.Id.ToString()))
+                        {
+                            issueExcludeIdList.Remove(issue.Id.ToString());
+                            continue;
+                        }
+                        IssueManager.SendToast(issue);
+                    }
+                    foreach (var issueExcludeId in issueExcludeIdList)
+                    {
+                        IssueManager.RemoveToast(issueExcludeId);
+                    }
+                    issueExcludeIdList.Clear();
+                    issueExcludeIdList.AddRange(issueList.Select(row => row.Id.ToString()).ToArray());
+
+                    lastGetIssue = DateTime.Now;
+                    Settings.Default.issueExclude = issueExcludeIdList;
+                    Settings.Default.Save();
+
+                    if (Visible)
+                    {
+                        Invoke((EventHandler)delegate
+                        {
+                            currentIssueList = new List<Issue>();
+                            currentIssueList.AddRange(issueList);
+                            currentIssueList.AddRange(bugList);
+                            var list = currentIssueList.Select(row =>
                             {
-                                Id = row.Id,
-                                Description = row.Description,
-                                Subject = row.Subject,
-                                DoneRatio = row.DoneRatio,
-                                Notes = row.Notes,
-                                ProjectName = row.Project.Name,
-                            };
-                        }).ToList();
-                        var index = DataGridViewIssues.CurrentCellAddress;
-                        DataGridViewIssues.DataSource = list;
-                        if (index.Y > -1 && index.Y > list.Count - 1)
-                        {
-                            DataGridViewIssues.Rows[list.Count - 1].Cells[index.X].Selected = true;
-                        }
-                        else if (index.Y > -1 && index.X > -1)
-                        {
-                            DataGridViewIssues.Rows[index.Y].Cells[index.X].Selected = true;
-                        }
-                    });
-                }
-            });
+                                return new IssueModel()
+                                {
+                                    Id = row.Id,
+                                    Description = row.Description,
+                                    Subject = row.Subject,
+                                    DoneRatio = row.DoneRatio,
+                                    Notes = row.Notes,
+                                    ProjectName = row.Project.Name,
+                                };
+                            }).ToList();
+                            var index = DataGridViewIssues.CurrentCellAddress;
+                            DataGridViewIssues.DataSource = list;
+                            if (index.Y > -1 && index.Y > list.Count - 1)
+                            {
+                                DataGridViewIssues.Rows[list.Count - 1].Cells[index.X].Selected = true;
+                            }
+                            else if (index.Y > -1 && index.X > -1)
+                            {
+                                DataGridViewIssues.Rows[index.Y].Cells[index.X].Selected = true;
+                            }
+                        });
+                    }
+                });
+                refreshingIssueList = false;
+            }
         }
 
         #endregion
@@ -309,7 +370,7 @@ namespace Labor
                 Timer_GetIssue_Tick(null, e);
                 isMainForm = true;
                 DateTimePicker.MaxDate = DateTime.Today;
-                ReloadTimeEntry();
+                RefreshTimeEntry();
             }
         }
 
@@ -332,11 +393,10 @@ namespace Labor
 
         private void Button_CopyLog_Click(object sender, EventArgs e)
         {
-            //todo 剪贴板win11异常
             if (!CheckCompletionAndTime()) return;
             if (LogOutputTextBox.Text.Length > 0)
             {
-                Clipboard.SetText(LogOutputTextBox.Text);
+                Clipboard.SetDataObject(LogOutputTextBox.Text);
             }
         }
 
@@ -357,10 +417,10 @@ namespace Labor
         {
             DateTimePicker.Value = DateTime.Today;
             DateTimePicker.MaxDate = DateTime.Today;
-            ReloadTimeEntry();
+            RefreshTimeEntry();
         }
 
-        private void DateTimePicker_CloseUp(object sender, EventArgs e) => ReloadTimeEntry();
+        private void DateTimePicker_CloseUp(object sender, EventArgs e) => RefreshTimeEntry();
 
         private void DataGridViewTimeEntry_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
@@ -393,7 +453,7 @@ namespace Labor
                     issue.DoneRatio = 100;
                 }
                 IssueManager.Update(TimeEntryModelList[e.RowIndex].SubjectId.ToString(), issue);
-                ReloadTimeEntry();
+                RefreshTimeEntry();
             }
         }
 
