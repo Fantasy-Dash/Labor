@@ -103,6 +103,12 @@
     <Compile Include="Enums\ToastGroupType.cs" />
     <Compile Include="Exception\NotLoginException.cs" />
     <Compile Include="Extension\CustomExtension.cs" />
+    <Compile Include="ListEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ListEdit.Designer.cs">
+      <DependentUpon>ListEdit.cs</DependentUpon>
+    </Compile>
     <Compile Include="LoginInfoEdit.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -131,6 +137,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="ListEdit.resx">
+      <DependentUpon>ListEdit.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LoginInfoEdit.resx">
       <DependentUpon>LoginInfoEdit.cs</DependentUpon>
     </EmbeddedResource>
@@ -323,5 +332,6 @@
       <Version>4.3.0</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

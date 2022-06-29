@@ -31,9 +31,19 @@ namespace Labor.Manager
         {
             var bugParam = new NameValueCollection
                 {
-                        { Redmine.Net.Api.RedmineKeys.ASSIGNED_TO_ID, "=me|"+string.Join("|",Settings.Default.bugWatcherList) },
                         { Redmine.Net.Api.RedmineKeys.TRACKER_ID, $"=8" },
                 };
+            if (Settings.Default.bugWatcherList.Count > 0)
+            {
+                var stringArray = new string[Settings.Default.bugWatcherList.Count];
+                Settings.Default.bugWatcherList.CopyTo(stringArray, 0);
+                bugParam.Add(Redmine.Net.Api.RedmineKeys.ASSIGNED_TO_ID, "=me|" + string.Join("|", stringArray));
+            }
+            else
+            {
+                bugParam.Add(Redmine.Net.Api.RedmineKeys.ASSIGNED_TO_ID, "=me");
+            }
+
             return GetList(bugParam);
         }
 

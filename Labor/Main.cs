@@ -20,11 +20,11 @@ namespace Labor
     {
         LoginInfoEdit LoginInfoEdit = new LoginInfoEdit();
         StringCollection issueExcludeIdList = null;
-        List<string> currentIssueIdList = new List<string>();
         List<TimeEntryModel> TimeEntryModelList = null;
         List<Issue> currentIssueList = null;
+        List<string> currentIssueIdList = new List<string>();
         StringBuilder LogText = null;
-        List<string> watcherList = null;
+        public static StringCollection watcherList = Settings.Default.bugWatcherList;
 
         #region 状态
 
@@ -32,6 +32,8 @@ namespace Labor
         bool refreshingIssueList = false;
         bool isQuit = false;
         bool isMainForm = true;
+        int issueListVerticalScrollIndex = 0;
+        int timeEntityListVerticalScrollIndex = 0;
         DateTime lastGetIssue = DateTime.Now;
 
         #endregion
@@ -261,7 +263,19 @@ namespace Labor
                     });
                     Invoke((EventHandler)delegate
                     {
-                        DataGridViewTimeEntry.DataSource = new List<TimeEntryModel>(TimeEntryModelList.Select(row => (TimeEntryModel)row.Clone()));
+                        var index = DataGridViewTimeEntry.CurrentCellAddress;
+                        var list = new List<TimeEntryModel>(TimeEntryModelList.Select(row => (TimeEntryModel)row.Clone()));
+                        DataGridViewTimeEntry.DataSource = list;
+                        if (index.Y > -1 && index.Y > list.Count - 1)
+                        {
+                            DataGridViewTimeEntry.Rows[list.Count - 1].Cells[index.X].Selected = true;
+                        }
+                        else if (index.Y > -1 && index.X > -1)
+                        {
+                            DataGridViewTimeEntry.Rows[index.Y].Cells[index.X].Selected = true;
+                        }
+                        DataGridViewTimeEntry.FirstDisplayedScrollingRowIndex = timeEntityListVerticalScrollIndex;
+
                         LogOutputTextBox.Text = LogOutputRefresh();
                         ChangePanelState();
                         Timer_GetIssue_Tick(null, new EventArgs());
@@ -340,6 +354,7 @@ namespace Labor
                                     ProjectName = row.Project.Name,
                                 };
                             }).ToList();
+
                             var index = DataGridViewIssues.CurrentCellAddress;
                             DataGridViewIssues.DataSource = list;
                             if (index.Y > -1 && index.Y > list.Count - 1)
@@ -350,6 +365,7 @@ namespace Labor
                             {
                                 DataGridViewIssues.Rows[index.Y].Cells[index.X].Selected = true;
                             }
+                            DataGridViewIssues.FirstDisplayedScrollingRowIndex = issueListVerticalScrollIndex;
                         });
                     }
                 });
@@ -396,6 +412,7 @@ namespace Labor
             if (!CheckCompletionAndTime()) return;
             if (LogOutputTextBox.Text.Length > 0)
             {
+                //解决第三方软件读剪贴板时写入异常
                 Clipboard.SetDataObject(LogOutputTextBox.Text);
             }
         }
@@ -418,6 +435,13 @@ namespace Labor
             DateTimePicker.Value = DateTime.Today;
             DateTimePicker.MaxDate = DateTime.Today;
             RefreshTimeEntry();
+        }
+
+        private void Button_WatcherList_Click(object sender, EventArgs e)
+        {
+            new ListEdit().ShowDialog();
+            Settings.Default.bugWatcherList = watcherList;
+            Settings.Default.Save();
         }
 
         private void DateTimePicker_CloseUp(object sender, EventArgs e) => RefreshTimeEntry();
@@ -454,6 +478,14 @@ namespace Labor
                 }
                 IssueManager.Update(TimeEntryModelList[e.RowIndex].SubjectId.ToString(), issue);
                 RefreshTimeEntry();
+            }
+        }
+
+        private void DataGridViewTimeEntry_Scroll(object sender, ScrollEventArgs e)
+        {
+            if (e.ScrollOrientation == ScrollOrientation.VerticalScroll)
+            {
+                timeEntityListVerticalScrollIndex = e.NewValue;
             }
         }
 
@@ -560,7 +592,16 @@ namespace Labor
             }
         }
 
+        private void DataGridViewIssues_Scroll(object sender, ScrollEventArgs e)
+        {
+            if (e.ScrollOrientation == ScrollOrientation.VerticalScroll)
+            {
+                issueListVerticalScrollIndex = e.NewValue;
+            }
+        }
+
         #endregion
+
 
     }
 }
