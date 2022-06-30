@@ -32,8 +32,8 @@ namespace Labor
         bool refreshingIssueList = false;
         bool isQuit = false;
         bool isMainForm = true;
-        int issueListVerticalScrollIndex = 0;
-        int timeEntityListVerticalScrollIndex = 0;
+        int issueListVerticalScrollIndex = -1;
+        int timeEntityListVerticalScrollIndex = -1;
         DateTime lastGetIssue = DateTime.Now;
 
         #endregion
@@ -274,7 +274,10 @@ namespace Labor
                         {
                             DataGridViewTimeEntry.Rows[index.Y].Cells[index.X].Selected = true;
                         }
-                        DataGridViewTimeEntry.FirstDisplayedScrollingRowIndex = timeEntityListVerticalScrollIndex;
+                        if (timeEntityListVerticalScrollIndex >= 0)
+                        {
+                            DataGridViewTimeEntry.FirstDisplayedScrollingRowIndex = timeEntityListVerticalScrollIndex;
+                        }
 
                         LogOutputTextBox.Text = LogOutputRefresh();
                         ChangePanelState();
@@ -365,7 +368,10 @@ namespace Labor
                             {
                                 DataGridViewIssues.Rows[index.Y].Cells[index.X].Selected = true;
                             }
-                            DataGridViewIssues.FirstDisplayedScrollingRowIndex = issueListVerticalScrollIndex;
+                            if (issueListVerticalScrollIndex >= 0)
+                            {
+                                DataGridViewIssues.FirstDisplayedScrollingRowIndex = issueListVerticalScrollIndex;
+                            }
                         });
                     }
                 });
