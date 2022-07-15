@@ -1,23 +1,35 @@
-﻿using Labor.Enums;
-using Labor.Manager;
-using Labor.Model;
-using Labor.Properties;
-using Microsoft.Toolkit.Uwp.Notifications;
-using Redmine.Net.Api.Types;
+﻿using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Configuration;
-using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using System.Net.Http;
+using Labor.Properties;
+using Labor.Model;
+using Redmine.Net.Api.Types;
+using System.Collections.Specialized;
+using System.Configuration;
+using Labor.Manager;
 
 namespace Labor
 {
-    public partial class Main : Form
+    /// <summary>
+    /// MainWindow.xaml 的交互逻辑
+    /// </summary>
+    public partial class MainWindow : Window
     {
+        User CurrentUser = null;
         LoginInfoEdit LoginInfoEdit = new LoginInfoEdit();
         StringCollection issueExcludeIdList = null;
         List<TimeEntryModel> TimeEntryModelList = null;
@@ -34,11 +46,11 @@ namespace Labor
         bool isMainForm = true;
         int issueListVerticalScrollIndex = -1;
         int timeEntityListVerticalScrollIndex = -1;
-        DateTime lastGetIssue = DateTime.Now;
+        DateTime lastGetIssue = DateTime.MinValue;
 
         #endregion
 
-        public Main()
+        public MainWindow()
         {
             InitializeComponent();
         }
@@ -77,8 +89,8 @@ namespace Labor
 
                 if (Settings.Default.FirstRun)
                 {
-                    var mssageBoxReturn = MessageBox.Show("是否开机自动启动?", "开机自启", MessageBoxButtons.YesNo);
-                    SystemManager.SetAutoStart(mssageBoxReturn == DialogResult.Yes);
+                    var mssageBoxReturn = MessageBox.Show("是否开机自动启动?", "开机自启", MessageBoxButton.YesNo);
+                    SystemManager.SetAutoStart(mssageBoxReturn == MessageBoxResult.Yes);
                     Settings.Default.FirstRun = false;
                     Settings.Default.Save();
                 }
@@ -97,25 +109,6 @@ namespace Labor
                 {
                     Login();
                 }
-                ToastNotificationManagerCompat.OnActivated += toastArgs =>
-                {
-                    ToastArguments args = ToastArguments.Parse(toastArgs.Argument);
-                    //todo 无法触发
-                    switch (Enum.Parse(typeof(ToastActionType), args.Get("action")))
-                    {
-                        case ToastActionType.RemindLater:
-                            IssueManager.SendToast(args.Get("contentId"), isShow: false);
-                            break;
-                        case ToastActionType.Click:
-                            Invoke((EventHandler)delegate
-                            {
-                                System.Diagnostics.Process.Start(Settings.Default.RedMineHost + "issues/" + args.Get("contentId"));
-                            });
-                            break;
-                        default:
-                            break;
-                    }
-                };
             }
         }
 
@@ -124,7 +117,7 @@ namespace Labor
         /// </summary>
         private void Login()
         {
-            User CurrentUser = Client.Login();
+            CurrentUser = Client.Login();
             Settings.Default.IsLogout = false;
             Label_Info.Text = CurrentUser.FirstName + " " + CurrentUser.LastName;
             Timer_GetIssue.Enabled = true;
@@ -137,11 +130,11 @@ namespace Labor
         /// </summary>
         public void Logout()
         {
-            Visible = false;
+          Visible = false;
             Settings.Default.IsLogout = true;
             Timer_GetIssue.Enabled = false;
             var ret = LoginInfoEdit.ShowDialog();
-            if (ret != DialogResult.Cancel)
+            if (ret.Value)
             {
                 Login();
                 Init(false);
@@ -214,12 +207,12 @@ namespace Labor
         {
             if (PanelState.BackColor == Color.Yellow)
             {
-                MessageBox.Show("工时不足或百分比不是100%", "警告", MessageBoxButtons.OK);
+                MessageBox.Show("工时不足或百分比不是100%", "警告", MessageBoxButton.OK);
             }
             if (PanelState.BackColor == Color.Red)
             {
-                DialogResult ret = MessageBox.Show("工时不足且百分比不是100% 确定要复制吗？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (ret == DialogResult.No)
+                var ret = MessageBox.Show("工时不足且百分比不是100% 确定要复制吗？", "警告", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (ret == MessageBoxResult.No)
                 {
                     return false;
                 }
@@ -266,17 +259,22 @@ namespace Labor
                         var index = DataGridViewTimeEntry.CurrentCellAddress;
                         var list = new List<TimeEntryModel>(TimeEntryModelList.Select(row => (TimeEntryModel)row.Clone()));
                         DataGridViewTimeEntry.DataSource = list;
-                        if (index.Y > -1 && index.Y > list.Count - 1)
+
+                        if (list.Count > 0)
                         {
-                            DataGridViewTimeEntry.Rows[list.Count - 1].Cells[index.X].Selected = true;
-                        }
-                        else if (index.Y > -1 && index.X > -1)
-                        {
-                            DataGridViewTimeEntry.Rows[index.Y].Cells[index.X].Selected = true;
-                        }
-                        if (timeEntityListVerticalScrollIndex >= 0)
-                        {
-                            DataGridViewTimeEntry.FirstDisplayedScrollingRowIndex = timeEntityListVerticalScrollIndex;
+                            if (timeEntityListVerticalScrollIndex >= 0)
+                            {
+                                DataGridViewTimeEntry.FirstDisplayedScrollingRowIndex = timeEntityListVerticalScrollIndex;
+                            }
+                            DataGridViewTimeEntry.ClearSelection();
+                            if (index.Y > -1 && index.Y > list.Count - 1)
+                            {
+                                DataGridViewTimeEntry.Rows[list.Count - 1].Cells[index.X].Selected = true;
+                            }
+                            else if (index.Y > -1 && index.X > -1)
+                            {
+                                DataGridViewTimeEntry.Rows[index.Y].Cells[index.X].Selected = true;
+                            }
                         }
 
                         LogOutputTextBox.Text = LogOutputRefresh();
@@ -350,6 +348,8 @@ namespace Labor
                                 return new IssueModel()
                                 {
                                     Id = row.Id,
+                                    AuthorId = row.Author.Id,
+                                    TrackerType = (TrackerTypeEnum)row.Tracker.Id,
                                     Description = row.Description,
                                     Subject = row.Subject,
                                     DoneRatio = row.DoneRatio,
@@ -360,17 +360,21 @@ namespace Labor
 
                             var index = DataGridViewIssues.CurrentCellAddress;
                             DataGridViewIssues.DataSource = list;
-                            if (index.Y > -1 && index.Y > list.Count - 1)
+                            if (list.Count > 0)
                             {
-                                DataGridViewIssues.Rows[list.Count - 1].Cells[index.X].Selected = true;
-                            }
-                            else if (index.Y > -1 && index.X > -1)
-                            {
-                                DataGridViewIssues.Rows[index.Y].Cells[index.X].Selected = true;
-                            }
-                            if (issueListVerticalScrollIndex >= 0)
-                            {
-                                DataGridViewIssues.FirstDisplayedScrollingRowIndex = issueListVerticalScrollIndex;
+                                if (issueListVerticalScrollIndex >= 0)
+                                {
+                                    DataGridViewIssues.FirstDisplayedScrollingRowIndex = issueListVerticalScrollIndex;
+                                }
+                                DataGridViewIssues.ClearSelection();
+                                if (index.Y > -1 && index.Y > list.Count - 1)
+                                {
+                                    DataGridViewIssues.Rows[list.Count - 1].Cells[index.X].Selected = true;
+                                }
+                                else if (index.Y > -1 && index.X > -1)
+                                {
+                                    DataGridViewIssues.Rows[index.Y].Cells[index.X].Selected = true;
+                                }
                             }
                         });
                     }
@@ -381,11 +385,75 @@ namespace Labor
 
         #endregion
 
+        private void ButtonPopToast_Click(object sender, RoutedEventArgs e)
+        {
+            string title = "Andrew sent you a picture";
+            string content = "Check this out, The Enchantments!";
+            string image = "https://picsum.photos/364/202?image=883";
+            int conversationId = 5;
+
+            // Construct the toast content
+            new ToastContentBuilder()
+
+                // Arguments when user taps body of toast
+                .AddArgument("action", "viewConversation")
+                .AddArgument("conversationId", conversationId)
+
+                // Title and subtitle
+                .AddText(title)
+                .AddText(content)
+
+
+                //.AddAppLogoOverride(new Uri(await DownloadImageToDisk("https://unsplash.it/64?image=1005")), ToastGenericAppLogoCrop.Circle)
+
+                .AddInputTextBox("tbReply", "Type a response")
+
+                // Note that for non-UWP apps, there's no need to specify background activation,
+                // since our activator decides whether to process in background or launch foreground window
+                .AddButton(new ToastButton()
+                    .SetContent("Reply")
+                    .AddArgument("action", "reply")) // Actions added here supplement (and overwrite) top-level actions
+
+                .AddButton(new ToastButton()
+                    .SetContent("Like")
+                    .AddArgument("action", "like"))
+
+                .AddButton(new ToastButton()
+                    .SetContent("View")
+                    .AddArgument("action", "viewImage")
+                    .AddArgument("imageUrl", image))
+
+                // And show the toast!
+                .Show();
+        }
+
+        internal void ShowConversation()
+        {
+            ContentBody.Content = new TextBlock()
+            {
+                Text = "You've just opened a conversation!",
+                FontWeight = FontWeights.Bold
+            };
+        }
+
+        internal void ShowImage(string imageUrl)
+        {
+            ContentBody.Content = new Image()
+            {
+                Source = new BitmapImage(new Uri(imageUrl))
+            };
+        }
+
+        private void ButtonClearToasts_Click(object sender, RoutedEventArgs e)
+        {
+            ToastNotificationManagerCompat.History.Clear();
+        }
+
         #region 窗体事件
 
-        private void Main_Load(object sender, EventArgs e) => Init(true);
+        private void Window_Loaded(object sender, RoutedEventArgs e) => Init(true);
 
-        private void Main_Activated(object sender, EventArgs e)
+        private void Window_Activated(object sender, EventArgs e)
         {
             if (!Settings.Default.IsLogout)
             {
@@ -396,7 +464,7 @@ namespace Labor
             }
         }
 
-        private void Main_Deactivate(object sender, EventArgs e)
+        private void Window_Deactivated(object sender, EventArgs e)
         {
             if (!Settings.Default.IsLogout)
             {
@@ -404,7 +472,7 @@ namespace Labor
             }
         }
 
-        private void Main_FormClosing(object sender, FormClosingEventArgs e)
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Visible = false;//关闭窗体时 隐藏窗体 同时取消关闭事件
             if (!isQuit)
@@ -413,7 +481,7 @@ namespace Labor
             }
         }
 
-        private void Button_CopyLog_Click(object sender, EventArgs e)
+        private void Button_CopyLog_Click(object sender, RoutedEventArgs e)
         {
             if (!CheckCompletionAndTime()) return;
             if (LogOutputTextBox.Text.Length > 0)
@@ -423,12 +491,12 @@ namespace Labor
             }
         }
 
-        private void Button_Logout_Click(object sender, EventArgs e)
+        private void Button_Logout_Click(object sender, RoutedEventArgs e)
         {
             Logout();
         }
 
-        private void Button_RefreshIssue_Click(object sender, EventArgs e)
+        private void Button_RefreshIssue_Click(object sender, RoutedEventArgs e)
         {
             ToastManager.Clear();
             currentIssueIdList.Clear();
@@ -436,178 +504,26 @@ namespace Labor
             RefreshIssueList();
         }
 
-        private void Button_Today_Click(object sender, EventArgs e)
+        private void Button_Today_Click(object sender, RoutedEventArgs e)
         {
             DateTimePicker.Value = DateTime.Today;
             DateTimePicker.MaxDate = DateTime.Today;
             RefreshTimeEntry();
         }
 
-        private void Button_WatcherList_Click(object sender, EventArgs e)
+        private void Button_WatcherList_Click(object sender, RoutedEventArgs e)
         {
             new ListEdit().ShowDialog();
             Settings.Default.bugWatcherList = watcherList;
             Settings.Default.Save();
         }
 
-        private void DateTimePicker_CloseUp(object sender, EventArgs e) => RefreshTimeEntry();
+        private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e) => RefreshTimeEntry();
 
-        private void DataGridViewTimeEntry_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        private void Button_Percent_Click(object sender, RoutedEventArgs e)
         {
-            if (DataGridViewTimeEntry.IsCurrentCellDirty)
-            {
-                DataGridViewTimeEntry.CommitEdit(DataGridViewDataErrorContexts.Commit);
-            }
+
         }
-
-        private void DataGridViewTimeEntry_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0)
-            {
-                return;
-            }
-        }
-
-        private void DataGridViewTimeEntry_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (DataGridViewTimeEntry.Columns[e.ColumnIndex].Name == "Percent" && e.RowIndex >= 0)
-            {
-                var currGridViewTimeEntry = (TimeEntryModel)((TimeEntryModel)DataGridViewTimeEntry.Rows[e.RowIndex].DataBoundItem).Clone();
-                var issue = IssueManager.Get(TimeEntryModelList[e.RowIndex].SubjectId.ToString(), new NameValueCollection());
-                if (currGridViewTimeEntry.Percent == 100)
-                {
-                    issue.DoneRatio = 0;
-                }
-                else
-                {
-                    issue.DoneRatio = 100;
-                }
-                IssueManager.Update(TimeEntryModelList[e.RowIndex].SubjectId.ToString(), issue);
-                RefreshTimeEntry();
-            }
-        }
-
-        private void DataGridViewTimeEntry_Scroll(object sender, ScrollEventArgs e)
-        {
-            if (e.ScrollOrientation == ScrollOrientation.VerticalScroll)
-            {
-                timeEntityListVerticalScrollIndex = e.NewValue;
-            }
-        }
-
-        private void NotifyIcon_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (!Settings.Default.IsLogout && e.Button == MouseButtons.Left)
-            {
-                Visible = !Visible;
-                if (Visible)
-                {
-                    TopLevel = true;
-                }
-            }
-        }
-
-        private void ToolStripItemForNotifyIcon_Click(object sender, ToolStripItemClickedEventArgs e)
-        {
-            switch (e.ClickedItem.Name)
-            {
-                case "AutoStart":
-                    SystemManager.SetAutoStart(!Settings.Default.AutoStart);
-                    AutoStart.Text = (Settings.Default.AutoStart ? "√" : "×") + "开机启动";
-                    break;
-                case "Quit":
-                    ProgramEnd();
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private void Timer_GetIssue_Tick(object sender, EventArgs e)
-        {
-            var isExecute = false;
-            if (isMainForm)
-            {
-                if (Visible)
-                {
-                    if (lastGetIssue.AddSeconds(3) < DateTime.Now) isExecute = true;
-                }
-                else
-                {
-                    if (lastGetIssue.AddSeconds(3) < DateTime.Now) isExecute = true;
-                }
-            }
-            else
-            {
-                if (Visible)
-                {
-                    if (lastGetIssue.AddSeconds(30) < DateTime.Now) isExecute = true;
-                }
-                else
-                {
-                    if (lastGetIssue.AddMinutes(1) < DateTime.Now) isExecute = true;
-                }
-            }
-
-            if (isExecute)
-            {
-                RefreshIssueList();
-            }
-        }
-
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-#if DEBUG
-            Invoke((EventHandler)delegate
-            {
-                Label_CurrentRequestCount.Text = DebugData.CurrentRequestCount.ToString();
-            });
-#endif
-            if (DebugData.CurrentRequestCount > 0)
-            {
-                if (!PictureBox_Loading.Visible)
-                {
-                    Invoke((EventHandler)delegate
-                    {
-                        PictureBox_Loading.Show();
-                    });
-                }
-            }
-            else if (PictureBox_Loading.Visible)
-            {
-                Invoke((EventHandler)delegate
-                {
-                    PictureBox_Loading.Hide();
-                });
-            }
-        }
-
-        private void DataGridViewIssues_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (DataGridViewIssues.Columns[e.ColumnIndex].DataPropertyName == "Subject" && e.RowIndex >= 0)
-            {
-                System.Diagnostics.Process.Start(Settings.Default.RedMineHost + "issues/" + ((IssueModel)DataGridViewIssues.Rows[e.RowIndex].DataBoundItem).Id);
-            }
-        }
-
-        private void DataGridViewIssues_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0)
-            {
-                return;
-            }
-        }
-
-        private void DataGridViewIssues_Scroll(object sender, ScrollEventArgs e)
-        {
-            if (e.ScrollOrientation == ScrollOrientation.VerticalScroll)
-            {
-                issueListVerticalScrollIndex = e.NewValue;
-            }
-        }
-
-        #endregion
-
-
     }
+    #endregion
 }

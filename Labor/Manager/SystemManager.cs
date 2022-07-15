@@ -1,8 +1,8 @@
 ﻿using Labor.Properties;
 using Microsoft.Win32;
 using System;
-using System.IO;
-using System.Windows.Forms;
+using System.Reflection;
+using System.Windows;
 
 namespace Labor.Manager
 {
@@ -23,7 +23,7 @@ namespace Labor.Manager
                 {
                     RegistryKey R_local = Registry.CurrentUser;
                     RegistryKey R_run = R_local.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run");
-                    R_run.SetValue("Labor", Application.ExecutablePath);
+                    R_run.SetValue("Labor", Assembly.GetExecutingAssembly().Location);
                     R_run.Close();
                     R_local.Close();
                 }
@@ -40,7 +40,7 @@ namespace Labor.Manager
             }
             catch (Exception ex)
             {
-                MessageBox.Show("您需要管理员权限切换开机启动\r\n"+ ex.Message);
+                MessageBox.Show("您需要管理员权限切换开机启动\r\n" + ex.Message);
             }
         }
     }

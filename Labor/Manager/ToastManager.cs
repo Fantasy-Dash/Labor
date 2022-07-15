@@ -17,7 +17,7 @@ namespace Labor.Manager
                 .SetContent("稍后提醒")
                 .AddArgument("action", ToastActionType.RemindLater)
                 .SetBackgroundActivation())
-                .SetToastScenario(ToastScenario.Reminder)
+                .SetToastScenario(ToastScenario.Default)
                 .AddArgument("action", "Delete")
                 .AddArgument("contentId", id)
                 .AddArgument("contentGroup", group)

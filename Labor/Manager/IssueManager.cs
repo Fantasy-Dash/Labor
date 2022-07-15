@@ -31,7 +31,7 @@ namespace Labor.Manager
         {
             var bugParam = new NameValueCollection
                 {
-                        { Redmine.Net.Api.RedmineKeys.TRACKER_ID, $"=8" },
+                        { Redmine.Net.Api.RedmineKeys.TRACKER_ID, "="+(int)TrackerTypeEnum.Bug },
                 };
             if (Settings.Default.bugWatcherList.Count > 0)
             {
@@ -55,10 +55,10 @@ namespace Labor.Manager
         {
             var issueParam = new NameValueCollection
                 {
-                        { Redmine.Net.Api.RedmineKeys.ASSIGNED_TO_ID, $"=me" },
-                        { Redmine.Net.Api.RedmineKeys.TRACKER_ID, $"=2" },
-                        { Redmine.Net.Api.RedmineKeys.STATUS_ID, $"=2" },
-                        { Redmine.Net.Api.RedmineKeys.DONE_RATIO, $"<=99" },
+                        { Redmine.Net.Api.RedmineKeys.ASSIGNED_TO_ID, "=me" },
+                        { Redmine.Net.Api.RedmineKeys.TRACKER_ID, "="+(int)TrackerTypeEnum.Develop },
+                        { Redmine.Net.Api.RedmineKeys.STATUS_ID, "="+(int) IssueStatusEnum.Doing},
+                        { Redmine.Net.Api.RedmineKeys.DONE_RATIO,"<=99" },
                 };
             return GetList(issueParam);
         }

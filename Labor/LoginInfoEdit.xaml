@@ -1,0 +1,23 @@
+﻿<Window x:Class="Labor.LoginInfoEdit"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Labor"
+        mc:Ignorable="d"
+        Title="登陆" Height="173" Width="239" Loaded="Window_Loaded" Closing="Window_Closing">
+    <Grid>
+        <Grid.ColumnDefinitions>
+        </Grid.ColumnDefinitions>
+        <Label x:Name="Label_Host" Content="RedMine地址:" Margin="10,10,0,0" HorizontalAlignment="Left" Width="90" Height="25" VerticalAlignment="Top" />
+        <Label x:Name="Label_ApiKey" Content="ApiKey(推荐):" Margin="14,35,0,0" HorizontalAlignment="Left" Width="86" Height="25" VerticalAlignment="Top" RenderTransformOrigin="0.708,0.43" />
+        <Label x:Name="Label_Account" Content="登陆名:" Margin="50,60,0,0" HorizontalAlignment="Left" Width="50" Height="25" VerticalAlignment="Top" />
+        <Label x:Name="Label_PassWord" Content="密码:" Margin="62,85,0,0" Height="25" VerticalAlignment="Top" HorizontalAlignment="Left" Width="36" />
+        <Button x:Name="Button_Exit" Content="退出" HorizontalAlignment="Left" Margin="150,119,0,0" VerticalAlignment="Top" Height="20" Width="76" Click="Button_Exit_Click"/>
+        <Button x:Name="Button_Sumbit" Content="提交" Margin="14,119,0,0" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="75" Click="Button_Sumbit_Click"/>
+        <TextBox x:Name="TB_Host" HorizontalAlignment="Left" Margin="106,14,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <PasswordBox x:Name="TB_ApiKey" HorizontalAlignment="Left" Margin="106,39,0,0" VerticalAlignment="Top" Width="120" GotFocus="TB_ApiKey_GotFocus" LostFocus="TB_ApiKey_LostFocus"/>
+        <TextBox x:Name="TB_Account" HorizontalAlignment="Left" Margin="106,64,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <PasswordBox x:Name="TB_PassWord" HorizontalAlignment="Left" Margin="106,89,0,0" VerticalAlignment="Top" Width="120" GotFocus="TB_PassWord_GotFocus" LostFocus="TB_PassWord_LostFocus"/>
+    </Grid>
+</Window>

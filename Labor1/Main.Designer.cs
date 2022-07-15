@@ -51,10 +51,6 @@ namespace Labor
             this.LabelPercent = new System.Windows.Forms.Label();
             this.LabelPercentText = new System.Windows.Forms.Label();
             this.DataGridViewIssues = new System.Windows.Forms.DataGridView();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column1 = new System.Windows.Forms.DataGridViewLinkColumn();
-            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
@@ -74,6 +70,10 @@ namespace Labor
             this.Timer_GetIssue = new System.Windows.Forms.Timer(this.components);
             this.Button_RefreshIssue = new System.Windows.Forms.Button();
             this.PictureBox_Loading = new System.Windows.Forms.PictureBox();
+            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column1 = new System.Windows.Forms.DataGridViewLinkColumn();
+            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.QuickControllButton = new System.Windows.Forms.DataGridViewButtonColumn();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridViewTimeEntry)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridViewIssues)).BeginInit();
             this.ContextMenuStripForNotifyIcon.SuspendLayout();
@@ -198,12 +198,12 @@ namespace Labor
             // 
             // LogOutputTextBox
             // 
-            this.LogOutputTextBox.Location = new System.Drawing.Point(770, 32);
+            this.LogOutputTextBox.Location = new System.Drawing.Point(770, 293);
             this.LogOutputTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.LogOutputTextBox.Multiline = true;
             this.LogOutputTextBox.Name = "LogOutputTextBox";
             this.LogOutputTextBox.ReadOnly = true;
-            this.LogOutputTextBox.Size = new System.Drawing.Size(235, 368);
+            this.LogOutputTextBox.Size = new System.Drawing.Size(235, 107);
             this.LogOutputTextBox.TabIndex = 5;
             // 
             // Button_CopyLog
@@ -280,10 +280,10 @@ namespace Labor
             this.DataGridViewIssues.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
             this.DataGridViewIssues.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.DataGridViewIssues.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn1,
             this.dataGridViewTextBoxColumn2,
             this.Column1,
-            this.dataGridViewTextBoxColumn5});
+            this.dataGridViewTextBoxColumn5,
+            this.QuickControllButton});
             this.DataGridViewIssues.Location = new System.Drawing.Point(10, 31);
             this.DataGridViewIssues.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.DataGridViewIssues.Name = "DataGridViewIssues";
@@ -292,46 +292,11 @@ namespace Labor
             this.DataGridViewIssues.RowHeadersVisible = false;
             this.DataGridViewIssues.RowTemplate.Height = 25;
             this.DataGridViewIssues.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.DataGridViewIssues.Size = new System.Drawing.Size(754, 233);
+            this.DataGridViewIssues.Size = new System.Drawing.Size(995, 233);
             this.DataGridViewIssues.TabIndex = 14;
             this.DataGridViewIssues.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewIssues_CellContentClick);
             this.DataGridViewIssues.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewIssues_CellValueChanged);
             this.DataGridViewIssues.Scroll += new System.Windows.Forms.ScrollEventHandler(this.DataGridViewIssues_Scroll);
-            // 
-            // dataGridViewTextBoxColumn1
-            // 
-            this.dataGridViewTextBoxColumn1.DataPropertyName = "Id";
-            this.dataGridViewTextBoxColumn1.HeaderText = "Id";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.ReadOnly = true;
-            this.dataGridViewTextBoxColumn1.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn2
-            // 
-            this.dataGridViewTextBoxColumn2.DataPropertyName = "ProjectName";
-            this.dataGridViewTextBoxColumn2.FillWeight = 15F;
-            this.dataGridViewTextBoxColumn2.HeaderText = "项目";
-            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            this.dataGridViewTextBoxColumn2.ReadOnly = true;
-            this.dataGridViewTextBoxColumn2.Width = 173;
-            // 
-            // Column1
-            // 
-            this.Column1.DataPropertyName = "Subject";
-            this.Column1.FillWeight = 35F;
-            this.Column1.HeaderText = "任务";
-            this.Column1.Name = "Column1";
-            this.Column1.ReadOnly = true;
-            this.Column1.Width = 405;
-            // 
-            // dataGridViewTextBoxColumn5
-            // 
-            this.dataGridViewTextBoxColumn5.DataPropertyName = "Description";
-            this.dataGridViewTextBoxColumn5.FillWeight = 15F;
-            this.dataGridViewTextBoxColumn5.HeaderText = "注释";
-            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
-            this.dataGridViewTextBoxColumn5.ReadOnly = true;
-            this.dataGridViewTextBoxColumn5.Width = 173;
             // 
             // button1
             // 
@@ -422,7 +387,6 @@ namespace Labor
             // 
             // AutoStart
             // 
-            this.AutoStart.Image = global::Labor.Properties.Resources.sync;
             this.AutoStart.Name = "AutoStart";
             this.AutoStart.Size = new System.Drawing.Size(99, 22);
             this.AutoStart.Text = "开机启动";
@@ -496,13 +460,49 @@ namespace Labor
             // 
             // PictureBox_Loading
             // 
-            this.PictureBox_Loading.Image = global::Labor.Properties.Resources.sync;
             this.PictureBox_Loading.Location = new System.Drawing.Point(908, 6);
             this.PictureBox_Loading.Name = "PictureBox_Loading";
             this.PictureBox_Loading.Size = new System.Drawing.Size(20, 21);
             this.PictureBox_Loading.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.PictureBox_Loading.TabIndex = 29;
             this.PictureBox_Loading.TabStop = false;
+            // 
+            // dataGridViewTextBoxColumn2
+            // 
+            this.dataGridViewTextBoxColumn2.DataPropertyName = "ProjectName";
+            this.dataGridViewTextBoxColumn2.FillWeight = 15F;
+            this.dataGridViewTextBoxColumn2.HeaderText = "项目";
+            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            this.dataGridViewTextBoxColumn2.ReadOnly = true;
+            this.dataGridViewTextBoxColumn2.Width = 175;
+            // 
+            // Column1
+            // 
+            this.Column1.DataPropertyName = "Subject";
+            this.Column1.FillWeight = 35F;
+            this.Column1.HeaderText = "任务";
+            this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
+            this.Column1.Width = 525;
+            // 
+            // dataGridViewTextBoxColumn5
+            // 
+            this.dataGridViewTextBoxColumn5.DataPropertyName = "Description";
+            this.dataGridViewTextBoxColumn5.FillWeight = 15F;
+            this.dataGridViewTextBoxColumn5.HeaderText = "注释";
+            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
+            this.dataGridViewTextBoxColumn5.ReadOnly = true;
+            this.dataGridViewTextBoxColumn5.Width = 175;
+            // 
+            // QuickControllButton
+            // 
+            this.QuickControllButton.DataPropertyName = "ButtonName";
+            this.QuickControllButton.HeaderText = "操作";
+            this.QuickControllButton.Name = "QuickControllButton";
+            this.QuickControllButton.ReadOnly = true;
+            this.QuickControllButton.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.QuickControllButton.Text = "按钮";
+            this.QuickControllButton.Width = 95;
             // 
             // Main
             // 
@@ -594,10 +594,10 @@ namespace Labor
         private System.Windows.Forms.DataGridViewTextBoxColumn Comments;
         private System.Windows.Forms.DataGridViewButtonColumn Percent;
         private System.Windows.Forms.DataGridViewTextBoxColumn Hours;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewLinkColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
+        private System.Windows.Forms.DataGridViewButtonColumn QuickControllButton;
     }
 }
 

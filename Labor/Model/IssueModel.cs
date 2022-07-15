@@ -1,4 +1,6 @@
-﻿namespace Labor.Model
+﻿using Labor.Enums;
+
+namespace Labor.Model
 {
     /// <summary>
     /// 任务模型
@@ -10,6 +12,16 @@
         /// 主键
         /// </summary>
         public int Id { get; set; }
+
+        /// <summary>
+        /// 作者Id
+        /// </summary>
+        public int AuthorId { get; set; }
+
+        /// <summary>
+        /// 任务类型
+        /// </summary>
+        public TrackerTypeEnum TrackerType { get; set; }
 
         /// <summary>
         /// 项目名
@@ -35,6 +47,11 @@
         /// 备注
         /// </summary>
         public string Notes { get; set; }
+
+        /// <summary>
+        /// 按钮提示文本
+        /// </summary>
+        public string ButtonName { get; set; }
 
 
         public object Clone() => new IssueModel()
